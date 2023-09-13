@@ -4,7 +4,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
-using System.Net;
 using System.Runtime.InteropServices;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
@@ -14,7 +13,8 @@ using Image = Microsoft.Azure.Kinect.Sensor.Image;
 namespace EnigMouseSendMaster
 {
     public partial class Form1 : Form
-    {//画像処理関係
+    {
+        //画像処理関係
         private int _depthDistanceMin = 500;
         private int _depthDistanceMax = 1500;
         private int _depthThresholdMaxColor = 200;
@@ -29,12 +29,6 @@ namespace EnigMouseSendMaster
         private int _irThresholdMin = 254;
         private int _irThresholdMax = 255;
 
-        //UDP関係
-        private bool _isUDPSend = false;
-        private UDPSender UDPSender;
-        private int _port = 12001; //適当な値
-
-
         //Kinectを扱う変数
         Device kinect;
         //Depth画像のBitmap
@@ -45,8 +39,22 @@ namespace EnigMouseSendMaster
 
         uint saveFileIndex = 0;
 
-
+        //フレームを固定するのに使用する変数
         DateTime preFrame;
+
+
+        #region 通信関係の変数
+        //ゲーム本体の通信周り
+        private bool isGamePC_UDPSend = false;
+        private UDPSender GamePC_UDPSender;
+        private string GamePCIPAdress = "localhost"; 
+        private int GamePCPort = 12001; //ゲーム本体と通信するポート番号
+
+
+        //ClientPCの通信周り
+
+
+        #endregion
 
 
         public Form1()
@@ -310,20 +318,30 @@ namespace EnigMouseSendMaster
 
         private void GamePCConnectButton_Click(object sender, EventArgs e)
         {
-
+            GamePCIPAdress = GamePCIP.Text;
+            ConnectedGamePCIP.Text = GamePCIPAdress.ToString();
+            ConnectedGamePCPort.Text = GamePCPort.ToString();
+            GamePC_UDPSender = new UDPSender(GamePCIPAdress, GamePCPort);
+            isGamePC_UDPSend = true;
         }
         private void ClientConnectButton_Click(object sender, EventArgs e)
         {
+/*            _ipAdressText = ClientPCIP.Text;
+            ConnectViewIpAdress.Text = _ipAdressText.ToString();
+            ConnectViewPort.Text = GamePCPort.ToString();
+            GamePC_UDPSender = new UDPSender(_ipAdressText, GamePCPort);
+            isGamePC_UDPSend = true;*/
 
         }
         //UPDの接続を開始する
         private void UDPConectStart_Click(object sender, EventArgs e)
         {
-            /*            _ipAdressText = ClientPCIP.Text;
-                        ConnectViewIpAdress.Text = _ipAdressText.ToString();
-                        ConnectViewPort.Text = _port.ToString();
-                        UDPSender = new UDPSender(_ipAdressText, _port);
-                        _isUDPSend = true;*/
+            /*
+             _ipAdressText = ClientPCIP.Text;
+             ConnectViewIpAdress.Text = _ipAdressText.ToString();
+             ConnectViewPort.Text = _port.ToString();
+             UDPSender = new UDPSender(_ipAdressText, _port);
+             _isUDPSend = true;*/
         }
 
         private void KinectRun_Click(object sender, EventArgs e)
@@ -367,7 +385,7 @@ namespace EnigMouseSendMaster
             stopwatch.Start();
             while (loop)
             {
-                if (_isUDPSend)
+                if (isGamePC_UDPSend)
                 {
                     TimeSpan deltaTime = GetDeltaTime();
 
@@ -394,7 +412,7 @@ namespace EnigMouseSendMaster
 
 
                     byte[] serializedData = MessagePackSerializer.Serialize(results);
-                    UDPSender.Send(serializedData);
+                    GamePC_UDPSender.Send(serializedData);
 
                 }
                 //表示を更新
