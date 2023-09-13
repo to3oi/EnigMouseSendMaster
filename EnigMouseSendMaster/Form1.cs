@@ -5,6 +5,7 @@ using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
 using BitmapData = System.Drawing.Imaging.BitmapData;
@@ -14,7 +15,27 @@ namespace EnigMouseSendMaster
 {
     public partial class Form1 : Form
     {
-        //画像処理関係
+
+        #region 外部のスクリプトで取得用
+        private static Form1 _form1Instance;
+        public static Form1 Instance
+        {
+            get
+            {
+                return _form1Instance;
+            }
+            private set
+            {
+                _form1Instance = value;
+            }
+        }
+
+        public void AddClientPCIPList(string s)
+        {
+            ClientPCIPList.Items.Add (s);
+        }
+        #endregion
+        #region 画像処理関係
         private int _depthDistanceMin = 500;
         private int _depthDistanceMax = 1500;
         private int _depthThresholdMaxColor = 200;
@@ -28,7 +49,7 @@ namespace EnigMouseSendMaster
 
         private int _irThresholdMin = 254;
         private int _irThresholdMax = 255;
-
+        #endregion
         //Kinectを扱う変数
         Device kinect;
         //Depth画像のBitmap
@@ -47,18 +68,36 @@ namespace EnigMouseSendMaster
         //ゲーム本体の通信周り
         private bool isGamePC_UDPSend = false;
         private UDPSender GamePC_UDPSender;
-        private string GamePCIPAdress = "localhost"; 
-        private int GamePCPort = 12001; //ゲーム本体と通信するポート番号
+        private string GamePCIPAdress = "localhost";
+        private static int GamePCPort = 12001; //ゲーム本体と通信するポート番号
 
 
         //ClientPCの通信周り
 
+        /// <summary>
+        /// 通信の確立
+        /// </summary>
+        private static int CommunicationSendPort = 12010;
+
+        /// <summary>
+        /// 画像の送信
+        /// </summary>
+        private static int ImageSendPort = 12011;
+
+        /// <summary>
+        /// 結果の取得
+        /// </summary>
+        private static int ResultReceivePort = 12012;
+
+        public List<ClientPCInfo> ClientPCInfos = new List<ClientPCInfo>();
 
         #endregion
 
 
         public Form1()
         {
+            Form1.Instance = this;
+
             InitializeComponent();
 
             //デバッグ用
@@ -313,7 +352,7 @@ namespace EnigMouseSendMaster
             Properties.Settings.Default.GetConnectIP = GamePCIP.Text;
 
             Properties.Settings.Default.Save();
-            kinect.StopCameras();
+            kinect?.StopCameras();
         }
 
         private void GamePCConnectButton_Click(object sender, EventArgs e)
@@ -326,11 +365,20 @@ namespace EnigMouseSendMaster
         }
         private void ClientConnectButton_Click(object sender, EventArgs e)
         {
-/*            _ipAdressText = ClientPCIP.Text;
-            ConnectViewIpAdress.Text = _ipAdressText.ToString();
-            ConnectViewPort.Text = GamePCPort.ToString();
-            GamePC_UDPSender = new UDPSender(_ipAdressText, GamePCPort);
-            isGamePC_UDPSend = true;*/
+            ClientPCInfo clientPCInfo = new ClientPCInfo(ClientPCIP.Text);
+
+            TCPSender tcpSender = new TCPSender(ClientPCIP.Text, CommunicationSendPort, clientPCInfo.CommunicationReceive);
+            if (tcpSender.isConnection)
+            {
+                tcpSender.Send(Encoding.UTF8.GetBytes("connecting"));
+            }
+
+            ClientPCIP.Text = "";
+            /*            _ipAdressText = ClientPCIP.Text;
+                        ConnectViewIpAdress.Text = _ipAdressText.ToString();
+                        ConnectViewPort.Text = GamePCPort.ToString();
+                        GamePC_UDPSender = new UDPSender(_ipAdressText, GamePCPort);
+                        isGamePC_UDPSend = true;*/
 
         }
         //UPDの接続を開始する

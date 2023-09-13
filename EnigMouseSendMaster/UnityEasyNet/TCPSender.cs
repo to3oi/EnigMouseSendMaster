@@ -15,7 +15,7 @@ namespace UnityEasyNet
         /// </summary>
         public Action<(byte[] buffer, int readCount)> OnDataReceivedBytes;
 
-        private bool mIsConnection;
+        public bool isConnection;
 
         #region Constructors
 
@@ -32,7 +32,7 @@ namespace UnityEasyNet
                 mTcpClient = new TcpClient();
                 mTcpClient.Connect(_ipEndPoint);
                 mNetworkStream = mTcpClient.GetStream();
-                mIsConnection = true;
+                isConnection = true;
                 Console.WriteLine($"接続完了");
             }
             catch (Exception e)
@@ -53,7 +53,7 @@ namespace UnityEasyNet
                 OnDataReceivedBytes = _OnDataReceivedBytes;
                 mTcpClient = new TcpClient(_addressFamily);
                 mNetworkStream = mTcpClient.GetStream();
-                mIsConnection = true;
+                isConnection = true;
                 Console.WriteLine($"送信準備完了");
             }
             catch (Exception e)
@@ -76,7 +76,7 @@ namespace UnityEasyNet
                 mTcpClient = new TcpClient();
                 mTcpClient.Connect(_hostName, _port);
                 mNetworkStream = mTcpClient.GetStream();
-                mIsConnection = true;
+                isConnection = true;
                 Console.WriteLine($"送信準備完了");
             }
             catch (Exception e)
