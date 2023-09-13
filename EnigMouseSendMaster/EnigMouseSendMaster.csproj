@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +15,18 @@
     <PackageReference Include="Microsoft.Azure.Kinect.Sensor" Version="1.4.1" />
     <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.Extensions" Version="4.7.0.20230115" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\ImageRecognition\.gitkeep">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\Model\model.onnx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\tempimage\.gitkeep">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

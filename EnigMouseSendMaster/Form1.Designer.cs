@@ -55,12 +55,12 @@
             KinectRunButton = new Button();
             splitContainer1 = new SplitContainer();
             tableLayoutPanel2 = new TableLayoutPanel();
-            g_Depth = new GroupBox();
-            depthBitmapBox = new PictureBox();
-            g_IR = new GroupBox();
-            irBitmapBox = new PictureBox();
             g_Result = new GroupBox();
             resultBitmapBox = new PictureBox();
+            g_IR = new GroupBox();
+            irBitmapBox = new PictureBox();
+            g_Depth = new GroupBox();
+            depthBitmapBox = new PictureBox();
             tableLayoutPanel1.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -80,12 +80,12 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
-            g_Depth.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)depthBitmapBox).BeginInit();
-            g_IR.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)irBitmapBox).BeginInit();
             g_Result.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).BeginInit();
+            g_IR.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)irBitmapBox).BeginInit();
+            g_Depth.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)depthBitmapBox).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -333,6 +333,7 @@
             DebugSenderButton.TabIndex = 1;
             DebugSenderButton.Text = "DebugSender";
             DebugSenderButton.UseVisualStyleBackColor = true;
+            DebugSenderButton.Click += DebugSender_Click;
             // 
             // KinectRunButton
             // 
@@ -342,6 +343,7 @@
             KinectRunButton.TabIndex = 0;
             KinectRunButton.Text = "KinectRun";
             KinectRunButton.UseVisualStyleBackColor = true;
+            KinectRunButton.Click += KinectRun_Click;
             // 
             // splitContainer1
             // 
@@ -379,26 +381,26 @@
             tableLayoutPanel2.Size = new Size(856, 324);
             tableLayoutPanel2.TabIndex = 0;
             // 
-            // g_Depth
+            // g_Result
             // 
-            g_Depth.Controls.Add(depthBitmapBox);
-            g_Depth.Location = new Point(3, 3);
-            g_Depth.Name = "g_Depth";
-            g_Depth.Size = new Size(279, 318);
-            g_Depth.TabIndex = 32;
-            g_Depth.TabStop = false;
-            g_Depth.Text = "Depth";
+            g_Result.Controls.Add(resultBitmapBox);
+            g_Result.Location = new Point(573, 3);
+            g_Result.Name = "g_Result";
+            g_Result.Size = new Size(280, 318);
+            g_Result.TabIndex = 34;
+            g_Result.TabStop = false;
+            g_Result.Text = "Result";
             // 
-            // depthBitmapBox
+            // resultBitmapBox
             // 
-            depthBitmapBox.Dock = DockStyle.Fill;
-            depthBitmapBox.Location = new Point(3, 19);
-            depthBitmapBox.Margin = new Padding(4);
-            depthBitmapBox.Name = "depthBitmapBox";
-            depthBitmapBox.Size = new Size(273, 296);
-            depthBitmapBox.SizeMode = PictureBoxSizeMode.Zoom;
-            depthBitmapBox.TabIndex = 0;
-            depthBitmapBox.TabStop = false;
+            resultBitmapBox.Dock = DockStyle.Fill;
+            resultBitmapBox.Location = new Point(3, 19);
+            resultBitmapBox.Margin = new Padding(4);
+            resultBitmapBox.Name = "resultBitmapBox";
+            resultBitmapBox.Size = new Size(274, 296);
+            resultBitmapBox.SizeMode = PictureBoxSizeMode.Zoom;
+            resultBitmapBox.TabIndex = 18;
+            resultBitmapBox.TabStop = false;
             // 
             // g_IR
             // 
@@ -421,26 +423,26 @@
             irBitmapBox.TabIndex = 1;
             irBitmapBox.TabStop = false;
             // 
-            // g_Result
+            // g_Depth
             // 
-            g_Result.Controls.Add(resultBitmapBox);
-            g_Result.Location = new Point(573, 3);
-            g_Result.Name = "g_Result";
-            g_Result.Size = new Size(280, 318);
-            g_Result.TabIndex = 34;
-            g_Result.TabStop = false;
-            g_Result.Text = "Result";
+            g_Depth.Controls.Add(depthBitmapBox);
+            g_Depth.Location = new Point(3, 3);
+            g_Depth.Name = "g_Depth";
+            g_Depth.Size = new Size(279, 318);
+            g_Depth.TabIndex = 32;
+            g_Depth.TabStop = false;
+            g_Depth.Text = "Depth";
             // 
-            // resultBitmapBox
+            // depthBitmapBox
             // 
-            resultBitmapBox.Dock = DockStyle.Fill;
-            resultBitmapBox.Location = new Point(3, 19);
-            resultBitmapBox.Margin = new Padding(4);
-            resultBitmapBox.Name = "resultBitmapBox";
-            resultBitmapBox.Size = new Size(274, 296);
-            resultBitmapBox.SizeMode = PictureBoxSizeMode.Zoom;
-            resultBitmapBox.TabIndex = 18;
-            resultBitmapBox.TabStop = false;
+            depthBitmapBox.Dock = DockStyle.Fill;
+            depthBitmapBox.Location = new Point(3, 19);
+            depthBitmapBox.Margin = new Padding(4);
+            depthBitmapBox.Name = "depthBitmapBox";
+            depthBitmapBox.Size = new Size(273, 296);
+            depthBitmapBox.SizeMode = PictureBoxSizeMode.Zoom;
+            depthBitmapBox.TabIndex = 0;
+            depthBitmapBox.TabStop = false;
             // 
             // Form1
             // 
@@ -450,6 +452,7 @@
             Controls.Add(splitContainer1);
             Name = "Form1";
             Text = "Form1";
+            FormClosing += Form1_FormClosing; 
             tableLayoutPanel1.ResumeLayout(false);
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
@@ -472,12 +475,12 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
-            g_Depth.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)depthBitmapBox).EndInit();
-            g_IR.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)irBitmapBox).EndInit();
             g_Result.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).EndInit();
+            g_IR.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)irBitmapBox).EndInit();
+            g_Depth.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)depthBitmapBox).EndInit();
             ResumeLayout(false);
         }
 

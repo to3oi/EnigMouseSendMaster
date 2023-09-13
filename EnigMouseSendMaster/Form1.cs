@@ -1,21 +1,20 @@
-//using MessagePack;
-//using Microsoft.Azure.Kinect.Sensor;
-//using OpenCvSharp;
-//using OpenCvSharp.Extensions;
+using MessagePack;
+using Microsoft.Azure.Kinect.Sensor;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Runtime.InteropServices;
-//using UnityEasyNet;
-//using static KinectImageConvertSender.FilePath;
+using UnityEasyNet;
+using static EnigMouseSendMaster.FilePath;
 using BitmapData = System.Drawing.Imaging.BitmapData;
-//using Image = Microsoft.Azure.Kinect.Sensor.Image;
+using Image = Microsoft.Azure.Kinect.Sensor.Image;
 
 namespace EnigMouseSendMaster
 {
     public partial class Form1 : Form
-    {
-        //画像処理関係
+    {//画像処理関係
         private int _depthDistanceMin = 500;
         private int _depthDistanceMax = 1500;
         private int _depthThresholdMaxColor = 200;
@@ -30,9 +29,25 @@ namespace EnigMouseSendMaster
         private int _irThresholdMin = 254;
         private int _irThresholdMax = 255;
 
-
-        bool loop = true;
+        //UDP関係
         private bool _isUDPSend = false;
+        private UDPSender UDPSender;
+        private int _port = 12001; //適当な値
+
+
+        //Kinectを扱う変数
+        Device kinect;
+        //Depth画像のBitmap
+        Bitmap depthBitmap;
+        //IR画像のBitmap
+        Bitmap irBitmap;
+        bool loop = true;
+
+        uint saveFileIndex = 0;
+
+
+        DateTime preFrame;
+
 
         public Form1()
         {
@@ -54,7 +69,7 @@ namespace EnigMouseSendMaster
         }
 
         //Kinectのデータ更新
-        /*private async Task KinectUpdate()
+        private async Task KinectUpdate()
         {
             preFrame = DateTime.Now;
             while (loop)
@@ -193,7 +208,7 @@ namespace EnigMouseSendMaster
 
                     #region Maskを描画する
 
-                    //背景用のbitmap
+                    /*//背景用のbitmap
                     Bitmap bg_bitmap = BitmapConverter.ToBitmap(outDst);
 
                     //描画先とするImageオブジェクトを作成する
@@ -236,20 +251,21 @@ namespace EnigMouseSendMaster
                     graphics.Dispose();
 
                     //表示
-                    resultBitmapBox.Image = canvas;
+                    resultBitmapBox.Image = canvas;*/
+                    resultBitmapBox.Image = BitmapConverter.ToBitmap(outDst);
                     #endregion
 
-                    *//*                    //デバッグ
-                                        Cv2.ImShow("result", outDst);*//*
+                    //デバッグ
+                    //Cv2.ImShow("result", outDst);
 
                     //画像として保存するパスを作成
-                    var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
+                    //var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
 
                     //保存
-                    outDst.SaveImage(TempImageFilePath);
+                    //outDst.SaveImage(TempImageFilePath);
 
                     //非同期で画像認識を実行
-                    _ = Task.Run(() => ImageRecognition(TempImageFilePath));
+                    //_ = Task.Run(() => ImageRecognition(TempImageFilePath));
 
                     if (saveFileIndex <= 100)
                     {
@@ -267,11 +283,94 @@ namespace EnigMouseSendMaster
                 //表示を更新
                 this.Update();
             }
+
+        }
+
+        //Bitmap画像に関する初期設定
+        private void InitBitmap()
+        {
+            //Depth画像の横幅(width)と縦幅(height)を取得
+            int width = kinect.GetCalibration().DepthCameraCalibration.ResolutionWidth;
+            int height = kinect.GetCalibration().DepthCameraCalibration.ResolutionHeight;
+
+            //PictureBoxに貼り付けるBitmap画像を作成。サイズはkinectのDepth画像と同じ
+            depthBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            irBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        }
+
+        //Kinectの初期化
+        private void InitKinect()
+        {
+            kinect = Device.Open(0);
+            kinect.StartCameras(new DeviceConfiguration
+            {
+                ColorFormat = Microsoft.Azure.Kinect.Sensor.ImageFormat.ColorBGRA32,
+                ColorResolution = ColorResolution.R720p,
+                DepthMode = DepthMode.NFOV_Unbinned,
+                SynchronizedImagesOnly = true,
+                CameraFPS = FPS.FPS30
+            });
+        }
+        /*private void Form1_Load(object sender, EventArgs e)
+        {
+            //値を読み込み
+            TopMask.Text = Properties.Settings.Default.TopMask.ToString();
+            BottomMask.Text = Properties.Settings.Default.BottomMask.ToString();
+            LeftMask.Text = Properties.Settings.Default.LeftMask.ToString();
+            RightMask.Text = Properties.Settings.Default.RightMask.ToString();
+            PositionOffsetX.Text = Properties.Settings.Default.PositionOffsetX.ToString();
+            PositionOffsetY.Text = Properties.Settings.Default.PositionOffsetY.ToString();
+            GetConnectIP.Text = Properties.Settings.Default.GetConnectIP;
+        }
+
+        //アプリ終了時にKinect終了
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            loop = false;
+
+            //値を保存
+            Properties.Settings.Default.TopMask = int.Parse(TopMask.Text);
+            Properties.Settings.Default.BottomMask = int.Parse(BottomMask.Text);
+            Properties.Settings.Default.LeftMask = int.Parse(LeftMask.Text);
+            Properties.Settings.Default.RightMask = int.Parse(RightMask.Text);
+            Properties.Settings.Default.PositionOffsetX = double.Parse(PositionOffsetX.Text);
+            Properties.Settings.Default.PositionOffsetY = double.Parse(PositionOffsetY.Text);
+            Properties.Settings.Default.GetConnectIP = GetConnectIP.Text;
+
+            Properties.Settings.Default.Save();
+
+        }*/
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
             //ループが終了したらKinectも停止
             kinect.StopCameras();
         }
 
+        //UPDの接続を開始する
+        private void UDPConectStart_Click(object sender, EventArgs e)
+        {
+            /*            _ipAdressText = ClientPCIP.Text;
+                        ConnectViewIpAdress.Text = _ipAdressText.ToString();
+                        ConnectViewPort.Text = _port.ToString();
+                        UDPSender = new UDPSender(_ipAdressText, _port);
+                        _isUDPSend = true;*/
+        }
 
+        private void KinectRun_Click(object sender, EventArgs e)
+        {
+            InitKinect();
+
+            //Kinectの設定情報に基づいてBitmap関連情報を初期化
+            InitBitmap();
+
+            //画像認識のクラスを初期化
+            //imageRecognition = new ImageRecognition();
+
+            //データ取得
+            //TODO:キャンセルと再実行可能なら再実行する処理
+            Task t = KinectUpdate();
+        }
 
         #region デバッグ
         //デバッグ用
@@ -345,6 +444,6 @@ namespace EnigMouseSendMaster
 
             return deltaTime;
         }
-        #endregion*/
+        #endregion
     }
 }
