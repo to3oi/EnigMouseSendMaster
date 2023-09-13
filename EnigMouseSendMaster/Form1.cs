@@ -54,7 +54,7 @@ namespace EnigMouseSendMaster
             InitializeComponent();
 
             //デバッグ用
-            //AllocConsole();
+            AllocConsole();
             /*            //IPv4のアドレスを取得して表示
                         IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
@@ -162,7 +162,7 @@ namespace EnigMouseSendMaster
                         }
                     }
                     //書き込み終了
-                    irBitmap.UnlockBits(bitmapData);
+                    irBitmap.UnlockBits(irData);
                     irImage.Dispose();
                     //pictureBoxに画像を貼り付け
                     irBitmapBox.Image = irBitmap;
@@ -182,7 +182,6 @@ namespace EnigMouseSendMaster
                     Mat tempDepthMatBit = new Mat();
                     Cv2.Threshold(tempDepthMatGray, tempDepthMatBit, _depthThresholdMin, _depthThresholdMax, ThresholdTypes.Binary);
                     tempDepthMatGray.Dispose();
-
                     //IRカメラの処理
                     Mat irMat = new Mat();
                     irMat = BitmapConverter.ToMat(irBitmap);
@@ -200,69 +199,41 @@ namespace EnigMouseSendMaster
                     Mat outDst = new Mat();
                     Cv2.BitwiseAnd(tempDepthMatBit, tempDepthMatBit, outDst, tempIrMatBit);
 
-
-
-
-
                     #endregion
-
-                    #region Maskを描画する
-
-                    /*//背景用のbitmap
-                    Bitmap bg_bitmap = BitmapConverter.ToBitmap(outDst);
-
-                    //描画先とするImageオブジェクトを作成する
-                    Bitmap canvas = new Bitmap(bg_bitmap.Width, bg_bitmap.Height);
-                    Graphics graphics = Graphics.FromImage(canvas);
-
-                    graphics.DrawImage(bg_bitmap, 0, 0, bg_bitmap.Width, bg_bitmap.Height);
-
-                    //半透明のBrashを作成する
-                    SolidBrush semiTransBrush = new SolidBrush(Color.FromArgb(128, 0, 0, 255));
-
-                    //Left
-                    if (LeftMask.Text != "")
-                    {
-                        int leftMask = int.Parse(LeftMask.Text);
-                        graphics.FillRectangle(semiTransBrush, 0, 0, leftMask, bg_bitmap.Height);
-                    }
-
-                    //Right
-                    if (RightMask.Text != "")
+                    if (RightMask.Text != "" &&
+                        LeftMask.Text != "" &&
+                        TopMask.Text != "" &&
+                        BottomMask.Text != "")
                     {
                         int rightMask = int.Parse(RightMask.Text);
-                        graphics.FillRectangle(semiTransBrush, bg_bitmap.Width - rightMask, 0, rightMask, bg_bitmap.Height);
-                    }
-                    //Top
-                    if (TopMask.Text != "")
-                    {
+                        int leftMask = int.Parse(LeftMask.Text);
                         int topMask = int.Parse(TopMask.Text);
-                        graphics.FillRectangle(semiTransBrush, 0, 0, bg_bitmap.Width, topMask);
-                    }
-                    //Bottom
-                    if (BottomMask.Text != "")
-                    {
                         int bottomMask = int.Parse(BottomMask.Text);
-                        graphics.FillRectangle(semiTransBrush, 0, bg_bitmap.Height - bottomMask, bg_bitmap.Width, bottomMask);
+                        /* ------------>  x
+                         * |
+                         * |
+                         * |
+                         * |
+                         * |
+                         * y
+                         */
+                        var bottomValue = outDst.Height - topMask - bottomMask;
+                        var rightValue = outDst.Width - leftMask - rightMask;
+                        if (outDst.Width >= rightValue &&
+                            outDst.Height >= bottomValue)
+                        {
+                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,
+                                rightValue,
+                               bottomValue));
+                            Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 640 / clipedMat.Cols, 576 / clipedMat.Rows);
+                            resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
+
+                            var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
+
+                            //保存
+                            clipedMat.SaveImage(TempImageFilePath);
+                        }
                     }
-
-                    bg_bitmap.Dispose();
-                    semiTransBrush.Dispose();
-                    graphics.Dispose();
-
-                    //表示
-                    resultBitmapBox.Image = canvas;*/
-                    resultBitmapBox.Image = BitmapConverter.ToBitmap(outDst);
-                    #endregion
-
-                    //デバッグ
-                    //Cv2.ImShow("result", outDst);
-
-                    //画像として保存するパスを作成
-                    //var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
-
-                    //保存
-                    //outDst.SaveImage(TempImageFilePath);
 
                     //非同期で画像認識を実行
                     //_ = Task.Run(() => ImageRecognition(TempImageFilePath));
@@ -278,7 +249,6 @@ namespace EnigMouseSendMaster
 
                     tempDepthMatBit.Dispose();
                     tempIrMatBit.Dispose();
-                    capture.Dispose();
                 }
                 //表示を更新
                 this.Update();
@@ -311,16 +281,15 @@ namespace EnigMouseSendMaster
                 CameraFPS = FPS.FPS30
             });
         }
-        /*private void Form1_Load(object sender, EventArgs e)
+
+        private void Form1_Load(object sender, EventArgs e)
         {
             //値を読み込み
             TopMask.Text = Properties.Settings.Default.TopMask.ToString();
             BottomMask.Text = Properties.Settings.Default.BottomMask.ToString();
             LeftMask.Text = Properties.Settings.Default.LeftMask.ToString();
             RightMask.Text = Properties.Settings.Default.RightMask.ToString();
-            PositionOffsetX.Text = Properties.Settings.Default.PositionOffsetX.ToString();
-            PositionOffsetY.Text = Properties.Settings.Default.PositionOffsetY.ToString();
-            GetConnectIP.Text = Properties.Settings.Default.GetConnectIP;
+            GamePCIP.Text = Properties.Settings.Default.GetConnectIP;
         }
 
         //アプリ終了時にKinect終了
@@ -333,20 +302,20 @@ namespace EnigMouseSendMaster
             Properties.Settings.Default.BottomMask = int.Parse(BottomMask.Text);
             Properties.Settings.Default.LeftMask = int.Parse(LeftMask.Text);
             Properties.Settings.Default.RightMask = int.Parse(RightMask.Text);
-            Properties.Settings.Default.PositionOffsetX = double.Parse(PositionOffsetX.Text);
-            Properties.Settings.Default.PositionOffsetY = double.Parse(PositionOffsetY.Text);
-            Properties.Settings.Default.GetConnectIP = GetConnectIP.Text;
+            Properties.Settings.Default.GetConnectIP = GamePCIP.Text;
 
             Properties.Settings.Default.Save();
-
-        }*/
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //ループが終了したらKinectも停止
             kinect.StopCameras();
         }
 
+        private void GamePCConnectButton_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void ClientConnectButton_Click(object sender, EventArgs e)
+        {
+
+        }
         //UPDの接続を開始する
         private void UDPConectStart_Click(object sender, EventArgs e)
         {

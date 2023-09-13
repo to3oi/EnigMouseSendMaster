@@ -178,6 +178,7 @@
             GamePCConnectButton.TabIndex = 2;
             GamePCConnectButton.Text = "ゲームPCを追加";
             GamePCConnectButton.UseVisualStyleBackColor = true;
+            GamePCConnectButton.Click += GamePCConnectButton_Click;
             // 
             // label2
             // 
@@ -216,6 +217,7 @@
             ClientConnectButton.TabIndex = 2;
             ClientConnectButton.Text = "ClientPCを追加";
             ClientConnectButton.UseVisualStyleBackColor = true;
+            ClientConnectButton.Click += ClientConnectButton_Click;
             // 
             // label1
             // 
@@ -285,6 +287,7 @@
             // 
             BottomMask.Anchor = AnchorStyles.Bottom;
             BottomMask.Location = new Point(84, 74);
+            BottomMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             BottomMask.Name = "BottomMask";
             BottomMask.Size = new Size(55, 23);
             BottomMask.TabIndex = 3;
@@ -293,6 +296,7 @@
             // 
             RightMask.Anchor = AnchorStyles.Right;
             RightMask.Location = new Point(161, 47);
+            RightMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             RightMask.Name = "RightMask";
             RightMask.Size = new Size(55, 23);
             RightMask.TabIndex = 2;
@@ -301,6 +305,7 @@
             // 
             LeftMask.Anchor = AnchorStyles.Left;
             LeftMask.Location = new Point(6, 47);
+            LeftMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             LeftMask.Name = "LeftMask";
             LeftMask.Size = new Size(55, 23);
             LeftMask.TabIndex = 1;
@@ -309,6 +314,8 @@
             // 
             TopMask.Anchor = AnchorStyles.Top;
             TopMask.Location = new Point(84, 22);
+            TopMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            TopMask.Minimum = new decimal(new int[] { 1000, 0, 0, int.MinValue });
             TopMask.Name = "TopMask";
             TopMask.Size = new Size(55, 23);
             TopMask.TabIndex = 0;
@@ -451,8 +458,9 @@
             ClientSize = new Size(856, 655);
             Controls.Add(splitContainer1);
             Name = "Form1";
-            Text = "Form1";
-            FormClosing += Form1_FormClosing; 
+            Text = "EnigMouseSendMaster";
+            FormClosing += Form1_FormClosing;
+            Load += Form1_Load;
             tableLayoutPanel1.ResumeLayout(false);
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
