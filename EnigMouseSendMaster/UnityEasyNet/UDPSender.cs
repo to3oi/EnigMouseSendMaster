@@ -42,6 +42,7 @@ namespace UnityEasyNet
             {
                 mUDP = new UdpClient();
                 mUDP.Connect(_ipEndPoint);
+                Console.WriteLine("Connect");
             }
             catch (Exception e)
             {

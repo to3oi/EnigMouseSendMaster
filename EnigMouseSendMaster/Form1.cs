@@ -5,7 +5,6 @@ using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Text;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
 using BitmapData = System.Drawing.Imaging.BitmapData;
@@ -32,7 +31,7 @@ namespace EnigMouseSendMaster
 
         public void AddClientPCIPList(string s)
         {
-            ClientPCIPList.Items.Add (s);
+            ClientPCIPList.Items.Add(s);
         }
         #endregion
         #region 画像処理関係
@@ -77,17 +76,17 @@ namespace EnigMouseSendMaster
         /// <summary>
         /// 通信の確立
         /// </summary>
-        private static int CommunicationSendPort = 12010;
+        public static int CommunicationSendPort = 12010;
 
         /// <summary>
         /// 画像の送信
         /// </summary>
-        private static int ImageSendPort = 12011;
+        public static int ImageSendPort = 12011;
 
         /// <summary>
         /// 結果の取得
         /// </summary>
-        private static int ResultReceivePort = 12012;
+        public static int ResultReceivePort = 12012;
 
         public List<ClientPCInfo> ClientPCInfos = new List<ClientPCInfo>();
 
@@ -247,6 +246,8 @@ namespace EnigMouseSendMaster
                     Cv2.BitwiseAnd(tempDepthMatBit, tempDepthMatBit, outDst, tempIrMatBit);
 
                     #endregion
+
+                    #region OffsetMask
                     if (RightMask.Text != "" &&
                         LeftMask.Text != "" &&
                         TopMask.Text != "" &&
@@ -279,28 +280,54 @@ namespace EnigMouseSendMaster
 
                             //保存
                             clipedMat.SaveImage(TempImageFilePath);
+
+                            if (saveFileIndex <= 100)
+                            {
+                                saveFileIndex++;
+                            }
+                            else
+                            {
+                                saveFileIndex = 0;
+                            }
+
+                            /*
+                            var buffer = new byte[clipedMat.Rows * clipedMat.Cols * clipedMat.Channels()];
+                            Cv2.ImEncode(".jpg", clipedMat, out buffer);
+                            Mat mat = Cv2.ImDecode(buffer, ImreadModes.Color);
+                            Cv2.ImShow("test", mat);*/
+
+
+                            #region 画像データを送信
+                            foreach (var client in ClientPCInfos)
+                            {
+                                //物体検出の結果を取得済みで現在フリーな状態の場合
+                                if (!client.WaitingForInput)
+                                {
+                                    //画像データbyte[]に変換する
+                                    byte[] imageData = File.ReadAllBytes(TempImageFilePath);
+                                    //送信
+                                    client.SendImage(imageData);
+                                    break;
+                                }
+                            }
+                            #endregion}
+
                         }
-                    }
+                        #endregion
+                        //非同期で画像認識を実行
+                        //_ = Task.Run(() => ImageRecognition(TempImageFilePath));
 
-                    //非同期で画像認識を実行
-                    //_ = Task.Run(() => ImageRecognition(TempImageFilePath));
 
-                    if (saveFileIndex <= 100)
-                    {
-                        saveFileIndex++;
-                    }
-                    else
-                    {
-                        saveFileIndex = 0;
-                    }
 
-                    tempDepthMatBit.Dispose();
-                    tempIrMatBit.Dispose();
+                        tempDepthMatBit.Dispose();
+                        tempIrMatBit.Dispose();
+                        await Task.Delay(100);
+                    }
+                    //表示を更新
+                    this.Update();
                 }
-                //表示を更新
-                this.Update();
-            }
 
+            }
         }
 
         //Bitmap画像に関する初期設定
@@ -366,12 +393,15 @@ namespace EnigMouseSendMaster
         private void ClientConnectButton_Click(object sender, EventArgs e)
         {
             ClientPCInfo clientPCInfo = new ClientPCInfo(ClientPCIP.Text);
+            clientPCInfo.testUDPSetUp();
+            /*            //////////////////////////
+                        TCPSender _tcpSender = new TCPSender(ClientPCIP.Text, Form1.CommunicationSendPort, clientPCInfo.CommunicationReceive);
+                        if (_tcpSender.isConnection)
+                        {
+                            _tcpSender.Send(Encoding.UTF8.GetBytes("connecting"));
+                        }*/
 
-            TCPSender tcpSender = new TCPSender(ClientPCIP.Text, CommunicationSendPort, clientPCInfo.CommunicationReceive);
-            if (tcpSender.isConnection)
-            {
-                tcpSender.Send(Encoding.UTF8.GetBytes("connecting"));
-            }
+
 
             ClientPCIP.Text = "";
             /*            _ipAdressText = ClientPCIP.Text;
