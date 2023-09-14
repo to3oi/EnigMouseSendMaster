@@ -352,12 +352,6 @@ namespace EnigMouseSendMaster
                                 saveFileIndex = 0;
                             }
 
-                            /*
-                            var buffer = new byte[clipedMat.Rows * clipedMat.Cols * clipedMat.Channels()];
-                            Cv2.ImEncode(".jpg", clipedMat, out buffer);
-                            Mat mat = Cv2.ImDecode(buffer, ImreadModes.Color);
-                            Cv2.ImShow("test", mat);*/
-
 
                             #region 画像データを送信
                             foreach (var client in ClientPCInfos)
@@ -376,10 +370,6 @@ namespace EnigMouseSendMaster
 
                         }
                         #endregion
-                        //非同期で画像認識を実行
-                        //_ = Task.Run(() => ImageRecognition(TempImageFilePath));
-
-
 
                         tempDepthMatBit.Dispose();
                         tempIrMatBit.Dispose();
@@ -441,7 +431,16 @@ namespace EnigMouseSendMaster
             Properties.Settings.Default.GetConnectIP = GamePCIP.Text;
 
             Properties.Settings.Default.Save();
+            
+            //停止処理
             kinect?.StopCameras();
+            ClientPC_Result_UDPReceiver.Dispose();
+            ClientPCRespons_UDPReceiver.Dispose();
+            GamePC_UDPSender.Dispose();
+            foreach(var info in ClientPCInfos)
+            {
+                info.Dispose();
+            }
         }
 
         private void GamePCConnectButton_Click(object sender, EventArgs e)
