@@ -7,7 +7,7 @@ namespace EnigMouseSendMaster
     /// <summary>
     /// ClientPCの情報
     /// </summary>
-    public struct ClientPCInfo : IDisposable
+    public class ClientPCInfo : IDisposable
     {
         #region UDPSender
         /// <summary>
@@ -39,10 +39,13 @@ namespace EnigMouseSendMaster
 
         public void SendImage(byte[] bytes)
         {
-            Console.WriteLine("Send");
             Image_UDPSender?.Send(bytes);
         }
+        public void SetWait(bool b)
+        {
+            WaitingForInput = b;
 
+        }
         public void Dispose()
         {
             ClientPC_UDPSender?.Dispose();

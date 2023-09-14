@@ -4,6 +4,7 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using UnityEasyNet;
@@ -121,7 +122,7 @@ namespace EnigMouseSendMaster
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <returns></returns>
-        private ClientPCInfo? GetClientPCInfo(string ipAddress)
+        private ClientPCInfo GetClientPCInfo(string ipAddress)
         {
             foreach (var clientPCInfo in ClientPCInfos)
             {
@@ -155,7 +156,24 @@ namespace EnigMouseSendMaster
 
             //UDPReceiverを準備
             ClientPCRespons_UDPReceiver = new UDPReceiver(CommunicationResponsPort, ClientPCRespons_Receive);
-            //ClientPC_Result_UDPReceiver = new UDPReceiver();
+            ClientPC_Result_UDPReceiver = new UDPReceiver(ResultReceivePort, ClientPC_Result_Receive);
+        }
+
+        private void ClientPC_Result_Receive(byte[] bytes)
+        {
+            var result = MessagePackSerializer.Deserialize<MasterPCResultStruct>(bytes);
+
+            //TODO:null許容型ではない方法できれいに書きたい
+            var info = GetClientPCInfo(result.IPAddress);
+            if(info == null)
+            {
+                Console.WriteLine($"Erroe IP {result.IPAddress}");
+                return; 
+            }
+            info.SetWait(false);
+            info.WaitingForInput = false;
+
+            //TODO:リザルトを送信
         }
 
         private void ClientPCRespons_Receive(byte[] bytes)
@@ -354,15 +372,17 @@ namespace EnigMouseSendMaster
 
 
                             #region 画像データを送信
-                            foreach (var client in ClientPCInfos)
+                            for (int i = 0;i < ClientPCInfos.Count; i++)
                             {
+                                Console.WriteLine(ClientPCInfos[i].WaitingForInput);
                                 //物体検出の結果を取得済みで現在フリーな状態の場合
-                                if (!client.WaitingForInput)
+                                if (!ClientPCInfos[i].WaitingForInput)
                                 {
                                     //画像データbyte[]に変換する
                                     byte[] imageData = File.ReadAllBytes(TempImageFilePath);
                                     //送信
-                                    client.SendImage(imageData);
+                                    ClientPCInfos[i].SendImage(imageData);
+                                    ClientPCInfos[i].WaitingForInput = true;
                                     break;
                                 }
                             }
@@ -373,6 +393,7 @@ namespace EnigMouseSendMaster
 
                         tempDepthMatBit.Dispose();
                         tempIrMatBit.Dispose();
+                        //テストの為遅延させている
                         await Task.Delay(100);
                     }
                     //表示を更新
@@ -434,13 +455,6 @@ namespace EnigMouseSendMaster
             
             //停止処理
             kinect?.StopCameras();
-            ClientPC_Result_UDPReceiver.Dispose();
-            ClientPCRespons_UDPReceiver.Dispose();
-            GamePC_UDPSender.Dispose();
-            foreach(var info in ClientPCInfos)
-            {
-                info.Dispose();
-            }
         }
 
         private void GamePCConnectButton_Click(object sender, EventArgs e)

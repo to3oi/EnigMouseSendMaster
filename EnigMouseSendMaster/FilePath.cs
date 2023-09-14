@@ -24,8 +24,6 @@
         static FilePath()
         {
             assetsPath = GetAbsolutePath(assetsRelativePath);
-
-            modelFilePath = Path.Combine(assetsPath, "Model", "model.onnx");
         }
     }
 }
