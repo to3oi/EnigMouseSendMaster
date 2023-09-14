@@ -5,6 +5,7 @@ using OpenCvSharp.Extensions;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
 using BitmapData = System.Drawing.Imaging.BitmapData;
@@ -34,6 +35,7 @@ namespace EnigMouseSendMaster
             ClientPCIPList.Items.Add(s);
         }
         #endregion
+
         #region 画像処理関係
         private int _depthDistanceMin = 500;
         private int _depthDistanceMax = 1500;
@@ -49,6 +51,7 @@ namespace EnigMouseSendMaster
         private int _irThresholdMin = 254;
         private int _irThresholdMax = 255;
         #endregion
+
         //Kinectを扱う変数
         Device kinect;
         //Depth画像のBitmap
@@ -64,34 +67,71 @@ namespace EnigMouseSendMaster
 
 
         #region 通信関係の変数
-        //ゲーム本体の通信周り
+
+        #region ゲーム本体の通信周り
         private bool isGamePC_UDPSend = false;
         private UDPSender GamePC_UDPSender;
         private string GamePCIPAdress = "localhost";
         private static int GamePCPort = 12001; //ゲーム本体と通信するポート番号
+        #endregion
 
-
-        //ClientPCの通信周り
+        #region ClientPCの通信周り
+        public List<ClientPCInfo> ClientPCInfos = new List<ClientPCInfo>();
 
         /// <summary>
-        /// 通信の確立
+        /// 通信の確立を送信するポート番号
         /// </summary>
         public static int CommunicationSendPort = 12010;
 
         /// <summary>
-        /// 画像の送信
+        /// 通信の確立を受け取るポート番号
         /// </summary>
-        public static int ImageSendPort = 12011;
+        public static int CommunicationResponsPort = 12011;
 
         /// <summary>
-        /// 結果の取得
+        /// 画像の送信をするポート番号
         /// </summary>
-        public static int ResultReceivePort = 12012;
+        public static int ImageSendPort = 12012;
 
-        public List<ClientPCInfo> ClientPCInfos = new List<ClientPCInfo>();
+        /// <summary>
+        /// 物体検出の結果を取得するポート番号
+        /// </summary>
+        public static int ResultReceivePort = 12013;
 
         #endregion
 
+        #region UDPReceiver
+        /// <summary>
+        /// 通信の確立を受信するUDPReceiver
+        /// </summary>
+        private UDPReceiver ClientPCRespons_UDPReceiver;
+
+        /// <summary>
+        /// 物体検出の結果を受信するUDPReceiver 
+        /// </summary>
+        private UDPReceiver ClientPC_Result_UDPReceiver;
+        #endregion
+
+        #endregion
+
+
+        /// <summary>
+        /// IPAddressからClientPCInfoを取得する
+        /// ない場合はnullが返る
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        private ClientPCInfo? GetClientPCInfo(string ipAddress)
+        {
+            foreach (var clientPCInfo in ClientPCInfos)
+            {
+                if (clientPCInfo.IP_Address == ipAddress)
+                {
+                    return clientPCInfo;
+                }
+            }
+            return null;
+        }
 
         public Form1()
         {
@@ -112,6 +152,28 @@ namespace EnigMouseSendMaster
                                 break;
                             }
                         }*/
+
+            //UDPReceiverを準備
+            ClientPCRespons_UDPReceiver = new UDPReceiver(CommunicationResponsPort, ClientPCRespons_Receive);
+            //ClientPC_Result_UDPReceiver = new UDPReceiver();
+        }
+
+        private void ClientPCRespons_Receive(byte[] bytes)
+        {
+
+            //送信が返ってきたらCheckConnectingIPListのIPと照合して一致していたらClientPCとみなす
+            for (int i = 0; i < CheckConnectingPCInfoList.Count; i++)
+            {
+                if (CheckConnectingPCInfoList[i].IP_Address == Encoding.UTF8.GetString(bytes))
+                {
+                    var pcInfo = CheckConnectingPCInfoList[i];
+                    ClientPCIPList.Items.Add(pcInfo.IP_Address);
+                    //照合が済んだらClientPCInfoをClientPCInfosに移動する
+                    CheckConnectingPCInfoList.RemoveAt(i);
+                    ClientPCInfos.Add(pcInfo);
+                    break;
+                }
+            }
         }
 
         //Kinectのデータ更新
@@ -390,38 +452,25 @@ namespace EnigMouseSendMaster
             GamePC_UDPSender = new UDPSender(GamePCIPAdress, GamePCPort);
             isGamePC_UDPSend = true;
         }
+
+        private List<ClientPCInfo> CheckConnectingPCInfoList = new List<ClientPCInfo>();
+        /// <summary>
+        /// ClietnPCに接続する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClientConnectButton_Click(object sender, EventArgs e)
         {
+            //入力欄が空なら何もしないで終了
+            if (ClientPCIP.Text == "") { return; }
+
+            Console.WriteLine(ClientPCIP.Text);
             ClientPCInfo clientPCInfo = new ClientPCInfo(ClientPCIP.Text);
-            clientPCInfo.testUDPSetUp();
-            /*            //////////////////////////
-                        TCPSender _tcpSender = new TCPSender(ClientPCIP.Text, Form1.CommunicationSendPort, clientPCInfo.CommunicationReceive);
-                        if (_tcpSender.isConnection)
-                        {
-                            _tcpSender.Send(Encoding.UTF8.GetBytes("connecting"));
-                        }*/
+            CheckConnectingPCInfoList.Add(clientPCInfo);
 
-
-
+            //すべての作業が終わったらIPアドレスの入力欄を空にする
             ClientPCIP.Text = "";
-            /*            _ipAdressText = ClientPCIP.Text;
-                        ConnectViewIpAdress.Text = _ipAdressText.ToString();
-                        ConnectViewPort.Text = GamePCPort.ToString();
-                        GamePC_UDPSender = new UDPSender(_ipAdressText, GamePCPort);
-                        isGamePC_UDPSend = true;*/
-
         }
-        //UPDの接続を開始する
-        private void UDPConectStart_Click(object sender, EventArgs e)
-        {
-            /*
-             _ipAdressText = ClientPCIP.Text;
-             ConnectViewIpAdress.Text = _ipAdressText.ToString();
-             ConnectViewPort.Text = _port.ToString();
-             UDPSender = new UDPSender(_ipAdressText, _port);
-             _isUDPSend = true;*/
-        }
-
         private void KinectRun_Click(object sender, EventArgs e)
         {
             InitKinect();

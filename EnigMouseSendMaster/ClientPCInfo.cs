@@ -9,63 +9,44 @@ namespace EnigMouseSendMaster
     /// </summary>
     public struct ClientPCInfo : IDisposable
     {
+        #region UDPSender
+        /// <summary>
+        /// 通信の確立を送信するUDPSender
+        /// </summary>
+        public UDPSender ClientPC_UDPSender = null;
+
+        /// <summary>
+        /// 画像を送信する UDPSender 
+        /// </summary>
+        public UDPSender Image_UDPSender = null;
+        #endregion
+
         /// <summary>
         /// trueで結果を待機中
         /// </summary>
         public bool WaitingForInput { get; set; } = false;
-        public TCPSender TCPSender { get; set; } = null;
-        public UDPSender ImageUDPSender { get; set; } = null;
         public string IP_Address { get; set; }
 
         public ClientPCInfo(string iP_Address)
         {
             IP_Address = iP_Address;
+            ClientPC_UDPSender = new UDPSender(iP_Address, Form1.CommunicationSendPort);
+            ClientPC_UDPSender.Send(Encoding.UTF8.GetBytes("connecting"));
 
+            Image_UDPSender = new UDPSender(iP_Address, Form1.ImageSendPort);
 
-        }
-        public void testUDPSetUp()
-        {
-            IPEndPoint Ep = new IPEndPoint(IPAddress.Parse(IP_Address), Form1.ImageSendPort);
-            ImageUDPSender = new UDPSender(Ep);
-            Form1.Instance.ClientPCInfos.Add(this);
-            Form1.Instance.AddClientPCIPList(IP_Address);
-        }
-        public void CommunicationReceive((byte[] bytes, int readCount) tuple)
-        {
-            var s = Encoding.UTF8.GetString(tuple.bytes, 0, tuple.readCount);
-
-
-            //接続の確立
-            if (s == "connecting")
-            {
-                Console.WriteLine(s == "connecting");
-                Form1.Instance.ClientPCInfos.Add(this);
-                Form1.Instance.AddClientPCIPList(IP_Address);
-
-                //if (ImageUDPSender != null) { return; }
-
-                IPEndPoint Ep = new IPEndPoint(IPAddress.Parse(IP_Address), Form1.ImageSendPort);
-                ImageUDPSender = new UDPSender(Ep);
-                Console.WriteLine(s == "connecting");
-
-            }
-            //TODO:接続の解除
-            if (s == "disConnecting")
-            {
-                Form1.Instance.ClientPCInfos.Remove(this);
-            }
         }
 
         public void SendImage(byte[] bytes)
         {
             Console.WriteLine("Send");
-            ImageUDPSender?.Send(bytes);
+            Image_UDPSender?.Send(bytes);
         }
 
         public void Dispose()
         {
-            TCPSender?.Dispose();
-            ImageUDPSender?.Dispose();
+            ClientPC_UDPSender?.Dispose();
+            Image_UDPSender?.Dispose();
 
         }
     }
