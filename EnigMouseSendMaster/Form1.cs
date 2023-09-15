@@ -1,4 +1,4 @@
-using MessagePack;
+ï»¿using MessagePack;
 using Microsoft.Azure.Kinect.Sensor;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -17,7 +17,7 @@ namespace EnigMouseSendMaster
     public partial class Form1 : Form
     {
 
-        #region ŠO•”‚ÌƒXƒNƒŠƒvƒg‚Åæ“¾—p
+        #region å¤–éƒ¨ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§å–å¾—ç”¨
         private static Form1 _form1Instance;
         public static Form1 Instance
         {
@@ -37,7 +37,7 @@ namespace EnigMouseSendMaster
         }
         #endregion
 
-        #region ‰æ‘œˆ—ŠÖŒW
+        #region ç”»åƒå‡¦ç†é–¢ä¿‚
         private int _depthDistanceMin = 500;
         private int _depthDistanceMax = 1500;
         private int _depthThresholdMaxColor = 200;
@@ -53,49 +53,49 @@ namespace EnigMouseSendMaster
         private int _irThresholdMax = 255;
         #endregion
 
-        //Kinect‚ğˆµ‚¤•Ï”
+        //Kinectã‚’æ‰±ã†å¤‰æ•°
         Device kinect;
-        //Depth‰æ‘œ‚ÌBitmap
+        //Depthç”»åƒã®Bitmap
         Bitmap depthBitmap;
-        //IR‰æ‘œ‚ÌBitmap
+        //IRç”»åƒã®Bitmap
         Bitmap irBitmap;
         bool loop = true;
 
         uint saveFileIndex = 0;
 
-        //ƒtƒŒ[ƒ€‚ğŒÅ’è‚·‚é‚Ì‚Ég—p‚·‚é•Ï”
+        //ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’å›ºå®šã™ã‚‹ã®ã«ä½¿ç”¨ã™ã‚‹å¤‰æ•°
         DateTime preFrame;
 
 
-        #region ’ÊMŠÖŒW‚Ì•Ï”
+        #region é€šä¿¡é–¢ä¿‚ã®å¤‰æ•°
 
-        #region ƒQ[ƒ€–{‘Ì‚Ì’ÊMü‚è
+        #region ã‚²ãƒ¼ãƒ æœ¬ä½“ã®é€šä¿¡å‘¨ã‚Š
         private bool isGamePC_UDPSend = false;
         private UDPSender GamePC_UDPSender;
         private string GamePCIPAdress = "localhost";
-        private static int GamePCPort = 12001; //ƒQ[ƒ€–{‘Ì‚Æ’ÊM‚·‚éƒ|[ƒg”Ô†
+        private static int GamePCPort = 12001; //ã‚²ãƒ¼ãƒ æœ¬ä½“ã¨é€šä¿¡ã™ã‚‹ãƒãƒ¼ãƒˆç•ªå·
         #endregion
 
-        #region ClientPC‚Ì’ÊMü‚è
+        #region ClientPCã®é€šä¿¡å‘¨ã‚Š
         public List<ClientPCInfo> ClientPCInfos = new List<ClientPCInfo>();
 
         /// <summary>
-        /// ’ÊM‚ÌŠm—§‚ğ‘—M‚·‚éƒ|[ƒg”Ô†
+        /// é€šä¿¡ã®ç¢ºç«‹ã‚’é€ä¿¡ã™ã‚‹ãƒãƒ¼ãƒˆç•ªå·
         /// </summary>
         public static int CommunicationSendPort = 12010;
 
         /// <summary>
-        /// ’ÊM‚ÌŠm—§‚ğó‚¯æ‚éƒ|[ƒg”Ô†
+        /// é€šä¿¡ã®ç¢ºç«‹ã‚’å—ã‘å–ã‚‹ãƒãƒ¼ãƒˆç•ªå·
         /// </summary>
         public static int CommunicationResponsPort = 12011;
 
         /// <summary>
-        /// ‰æ‘œ‚Ì‘—M‚ğ‚·‚éƒ|[ƒg”Ô†
+        /// ç”»åƒã®é€ä¿¡ã‚’ã™ã‚‹ãƒãƒ¼ãƒˆç•ªå·
         /// </summary>
         public static int ImageSendPort = 12012;
 
         /// <summary>
-        /// •¨‘ÌŒŸo‚ÌŒ‹‰Ê‚ğæ“¾‚·‚éƒ|[ƒg”Ô†
+        /// ç‰©ä½“æ¤œå‡ºã®çµæœã‚’å–å¾—ã™ã‚‹ãƒãƒ¼ãƒˆç•ªå·
         /// </summary>
         public static int ResultReceivePort = 12013;
 
@@ -103,12 +103,12 @@ namespace EnigMouseSendMaster
 
         #region UDPReceiver
         /// <summary>
-        /// ’ÊM‚ÌŠm—§‚ğóM‚·‚éUDPReceiver
+        /// é€šä¿¡ã®ç¢ºç«‹ã‚’å—ä¿¡ã™ã‚‹UDPReceiver
         /// </summary>
         private UDPReceiver ClientPCRespons_UDPReceiver;
 
         /// <summary>
-        /// •¨‘ÌŒŸo‚ÌŒ‹‰Ê‚ğóM‚·‚éUDPReceiver 
+        /// ç‰©ä½“æ¤œå‡ºã®çµæœã‚’å—ä¿¡ã™ã‚‹UDPReceiver 
         /// </summary>
         private UDPReceiver ClientPC_Result_UDPReceiver;
         #endregion
@@ -117,8 +117,8 @@ namespace EnigMouseSendMaster
 
 
         /// <summary>
-        /// IPAddress‚©‚çClientPCInfo‚ğæ“¾‚·‚é
-        /// ‚È‚¢ê‡‚Ínull‚ª•Ô‚é
+        /// IPAddressã‹ã‚‰ClientPCInfoã‚’å–å¾—ã™ã‚‹
+        /// ãªã„å ´åˆã¯nullãŒè¿”ã‚‹
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <returns></returns>
@@ -140,9 +140,9 @@ namespace EnigMouseSendMaster
 
             InitializeComponent();
 
-            //ƒfƒoƒbƒO—p
+            //ãƒ‡ãƒãƒƒã‚°ç”¨
             AllocConsole();
-            /*            //IPv4‚ÌƒAƒhƒŒƒX‚ğæ“¾‚µ‚Ä•\¦
+            /*            //IPv4ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’å–å¾—ã—ã¦è¡¨ç¤º
                         IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
                         foreach (IPAddress ip in ipHostEntry.AddressList)
@@ -154,7 +154,7 @@ namespace EnigMouseSendMaster
                             }
                         }*/
 
-            //UDPReceiver‚ğ€”õ
+            //UDPReceiverã‚’æº–å‚™
             ClientPCRespons_UDPReceiver = new UDPReceiver(CommunicationResponsPort, ClientPCRespons_Receive);
             ClientPC_Result_UDPReceiver = new UDPReceiver(ResultReceivePort, ClientPC_Result_Receive);
         }
@@ -163,7 +163,7 @@ namespace EnigMouseSendMaster
         {
             var result = MessagePackSerializer.Deserialize<MasterPCResultStruct>(bytes);
 
-            //TODO:null‹–—eŒ^‚Å‚Í‚È‚¢•û–@‚Å‚«‚ê‚¢‚É‘‚«‚½‚¢
+            //TODO:nullè¨±å®¹å‹ã§ã¯ãªã„æ–¹æ³•ã§ãã‚Œã„ã«æ›¸ããŸã„
             var info = GetClientPCInfo(result.IPAddress);
             if(info == null)
             {
@@ -173,20 +173,20 @@ namespace EnigMouseSendMaster
             info.SetWait(false);
             info.WaitingForInput = false;
 
-            //TODO:ƒŠƒUƒ‹ƒg‚ğ‘—M
+            //TODO:ãƒªã‚¶ãƒ«ãƒˆã‚’é€ä¿¡
         }
 
         private void ClientPCRespons_Receive(byte[] bytes)
         {
 
-            //‘—M‚ª•Ô‚Á‚Ä‚«‚½‚çCheckConnectingIPList‚ÌIP‚ÆÆ‡‚µ‚Äˆê’v‚µ‚Ä‚¢‚½‚çClientPC‚Æ‚İ‚È‚·
+            //é€ä¿¡ãŒè¿”ã£ã¦ããŸã‚‰CheckConnectingIPListã®IPã¨ç…§åˆã—ã¦ä¸€è‡´ã—ã¦ã„ãŸã‚‰ClientPCã¨ã¿ãªã™
             for (int i = 0; i < CheckConnectingPCInfoList.Count; i++)
             {
                 if (CheckConnectingPCInfoList[i].IP_Address == Encoding.UTF8.GetString(bytes))
                 {
                     var pcInfo = CheckConnectingPCInfoList[i];
                     ClientPCIPList.Items.Add(pcInfo.IP_Address);
-                    //Æ‡‚ªÏ‚ñ‚¾‚çClientPCInfo‚ğClientPCInfos‚ÉˆÚ“®‚·‚é
+                    //ç…§åˆãŒæ¸ˆã‚“ã ã‚‰ClientPCInfoã‚’ClientPCInfosã«ç§»å‹•ã™ã‚‹
                     CheckConnectingPCInfoList.RemoveAt(i);
                     ClientPCInfos.Add(pcInfo);
                     break;
@@ -194,13 +194,13 @@ namespace EnigMouseSendMaster
             }
         }
 
-        //Kinect‚Ìƒf[ƒ^XV
+        //Kinectã®ãƒ‡ãƒ¼ã‚¿æ›´æ–°
         private async Task KinectUpdate()
         {
             preFrame = DateTime.Now;
             while (loop)
             {
-                //‰æ‘œ”F¯‚ğ15FPS‚É§ŒÀ
+                //ç”»åƒèªè­˜ã‚’15FPSã«åˆ¶é™
                 if ((DateTime.Now - preFrame).Milliseconds < 67)
                 {
                     this.Update();
@@ -211,23 +211,23 @@ namespace EnigMouseSendMaster
                     preFrame = DateTime.Now;
                 }
 
-                //ƒf[ƒ^‚Ìæ“¾
+                //ãƒ‡ãƒ¼ã‚¿ã®å–å¾—
                 using (Capture capture = await Task.Run(() => kinect.GetCapture()).ConfigureAwait(true))
                 {
                     #region Depth
-                    //Depth‰æ‘œ‚ğæ“¾
+                    //Depthç”»åƒã‚’å–å¾—
                     Image depthImage = capture.Depth;
-                    //Depth‰æ‘œ‚ÌŠeƒsƒNƒZƒ‹‚Ì’l(‰œs)‚Ì‚İ‚ğæ“¾
+                    //Depthç”»åƒã®å„ãƒ”ã‚¯ã‚»ãƒ«ã®å€¤(å¥¥è¡Œ)ã®ã¿ã‚’å–å¾—
                     ushort[] depthArray = depthImage.GetPixels<ushort>().ToArray();
-                    //depthBitmap‚ÌŠe‰æ‘f‚É’l‚ğ‘‚«‚Ş€”õ
+                    //depthBitmapã®å„ç”»ç´ ã«å€¤ã‚’æ›¸ãè¾¼ã‚€æº–å‚™
                     BitmapData bitmapData = depthBitmap.LockBits(new Rectangle(0, 0, depthBitmap.Width, depthBitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
                     unsafe
                     {
-                        //ŠeƒsƒNƒZƒ‹‚Ì’l‚Ö‚Ìƒ|ƒCƒ“ƒ^
+                        //å„ãƒ”ã‚¯ã‚»ãƒ«ã®å€¤ã¸ã®ãƒã‚¤ãƒ³ã‚¿
                         byte* pixels = (byte*)bitmapData.Scan0;
                         int index;
                         int depth;
-                        //ˆêƒsƒNƒZƒ‹‚¸‚Âˆ—
+                        //ä¸€ãƒ”ã‚¯ã‚»ãƒ«ãšã¤å‡¦ç†
                         for (int i = 0; i < depthArray.Length; i++)
                         {
                             depth = 255 - (int)(255 * (depthArray[i] - _depthDistanceMin) / _depthDistanceMax);
@@ -246,29 +246,29 @@ namespace EnigMouseSendMaster
                             pixels[index++] = 255;
                         }
                     }
-                    //‘‚«‚İI—¹
+                    //æ›¸ãè¾¼ã¿çµ‚äº†
                     depthBitmap.UnlockBits(bitmapData);
                     depthImage.Dispose();
-                    //pictureBox‚É‰æ‘œ‚ğ“\‚è•t‚¯
+                    //pictureBoxã«ç”»åƒã‚’è²¼ã‚Šä»˜ã‘
                     depthBitmapBox.Image = depthBitmap;
 
                     #endregion
 
                     #region IR
-                    //IR‰æ‘œ‚ğæ“¾
+                    //IRç”»åƒã‚’å–å¾—
                     Image irImage = capture.IR;
-                    //IR‰æ‘œ‚ÌŠeƒsƒNƒZƒ‹‚Ì’l(‰œs)‚Ì‚İ‚ğæ“¾
+                    //IRç”»åƒã®å„ãƒ”ã‚¯ã‚»ãƒ«ã®å€¤(å¥¥è¡Œ)ã®ã¿ã‚’å–å¾—
                     ushort[] irArray = irImage.GetPixels<ushort>().ToArray();
-                    //irBitmap‚ÌŠe‰æ‘f‚É’l‚ğ‘‚«‚Ş€”õ
+                    //irBitmapã®å„ç”»ç´ ã«å€¤ã‚’æ›¸ãè¾¼ã‚€æº–å‚™
                     BitmapData irData = irBitmap.LockBits(new Rectangle(0, 0, irBitmap.Width, irBitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
                     unsafe
                     {
-                        //ŠeƒsƒNƒZƒ‹‚Ì’l‚Ö‚Ìƒ|ƒCƒ“ƒ^
+                        //å„ãƒ”ã‚¯ã‚»ãƒ«ã®å€¤ã¸ã®ãƒã‚¤ãƒ³ã‚¿
                         byte* pixels = (byte*)irData.Scan0;
                         int index;
                         int ir;
-                        //ˆêƒsƒNƒZƒ‹‚¸‚Âˆ—
+                        //ä¸€ãƒ”ã‚¯ã‚»ãƒ«ãšã¤å‡¦ç†
                         for (int i = 0; i < irArray.Length; i++)
                         {
                             ir = 255 - (int)(255 * (irArray[i] - _irDistanceMin) / _irDistanceMax);
@@ -287,33 +287,33 @@ namespace EnigMouseSendMaster
                             pixels[index++] = 255;
                         }
                     }
-                    //‘‚«‚İI—¹
+                    //æ›¸ãè¾¼ã¿çµ‚äº†
                     irBitmap.UnlockBits(irData);
                     irImage.Dispose();
-                    //pictureBox‚É‰æ‘œ‚ğ“\‚è•t‚¯
+                    //pictureBoxã«ç”»åƒã‚’è²¼ã‚Šä»˜ã‘
                     irBitmapBox.Image = irBitmap;
 
                     #endregion
 
                     #region Mask
-                    //[“xƒJƒƒ‰‚Ìˆ—
+                    //æ·±åº¦ã‚«ãƒ¡ãƒ©ã®å‡¦ç†
                     Mat depthMat = new Mat();
                     depthMat = BitmapConverter.ToMat(depthBitmap);
                     depthMat.Reshape(1);
 
-                    //[“xƒJƒƒ‰‚Ì‰æ‘œ‚Ìƒ`ƒƒƒ“ƒlƒ‹”‚Æƒ^ƒCƒv‚ğ•ÏX
+                    //æ·±åº¦ã‚«ãƒ¡ãƒ©ã®ç”»åƒã®ãƒãƒ£ãƒ³ãƒãƒ«æ•°ã¨ã‚¿ã‚¤ãƒ—ã‚’å¤‰æ›´
                     Mat tempDepthMatGray = new Mat();
                     Cv2.CvtColor(depthMat, tempDepthMatGray, ColorConversionCodes.RGB2GRAY);
                     depthMat.Dispose();
                     Mat tempDepthMatBit = new Mat();
                     Cv2.Threshold(tempDepthMatGray, tempDepthMatBit, _depthThresholdMin, _depthThresholdMax, ThresholdTypes.Binary);
                     tempDepthMatGray.Dispose();
-                    //IRƒJƒƒ‰‚Ìˆ—
+                    //IRã‚«ãƒ¡ãƒ©ã®å‡¦ç†
                     Mat irMat = new Mat();
                     irMat = BitmapConverter.ToMat(irBitmap);
                     irMat.Reshape(1);
 
-                    //IRƒJƒƒ‰‚Ì‰æ‘œ‚Ìƒ`ƒƒƒ“ƒlƒ‹”‚Æƒ^ƒCƒv‚ğ•ÏX
+                    //IRã‚«ãƒ¡ãƒ©ã®ç”»åƒã®ãƒãƒ£ãƒ³ãƒãƒ«æ•°ã¨ã‚¿ã‚¤ãƒ—ã‚’å¤‰æ›´
                     Mat tempIrMatGray = new Mat();
                     Cv2.CvtColor(irMat, tempIrMatGray, ColorConversionCodes.RGB2GRAY);
                     irMat.Dispose();
@@ -321,7 +321,7 @@ namespace EnigMouseSendMaster
                     Cv2.Threshold(tempIrMatGray, tempIrMatBit, _irThresholdMin, _irThresholdMax, ThresholdTypes.BinaryInv);
                     tempIrMatGray.Dispose();
 
-                    //ƒ}ƒXƒN‚ğ‚©‚¯‚é
+                    //ãƒã‚¹ã‚¯ã‚’ã‹ã‘ã‚‹
                     Mat outDst = new Mat();
                     Cv2.BitwiseAnd(tempDepthMatBit, tempDepthMatBit, outDst, tempIrMatBit);
 
@@ -358,7 +358,7 @@ namespace EnigMouseSendMaster
 
                             var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
 
-                            //•Û‘¶
+                            //ä¿å­˜
                             clipedMat.SaveImage(TempImageFilePath);
 
                             if (saveFileIndex <= 100)
@@ -371,16 +371,16 @@ namespace EnigMouseSendMaster
                             }
 
 
-                            #region ‰æ‘œƒf[ƒ^‚ğ‘—M
+                            #region ç”»åƒãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡
                             for (int i = 0;i < ClientPCInfos.Count; i++)
                             {
                                 Console.WriteLine(ClientPCInfos[i].WaitingForInput);
-                                //•¨‘ÌŒŸo‚ÌŒ‹‰Ê‚ğæ“¾Ï‚İ‚ÅŒ»İƒtƒŠ[‚Èó‘Ô‚Ìê‡
+                                //ç‰©ä½“æ¤œå‡ºã®çµæœã‚’å–å¾—æ¸ˆã¿ã§ç¾åœ¨ãƒ•ãƒªãƒ¼ãªçŠ¶æ…‹ã®å ´åˆ
                                 if (!ClientPCInfos[i].WaitingForInput)
                                 {
-                                    //‰æ‘œƒf[ƒ^byte[]‚É•ÏŠ·‚·‚é
+                                    //ç”»åƒãƒ‡ãƒ¼ã‚¿byte[]ã«å¤‰æ›ã™ã‚‹
                                     byte[] imageData = File.ReadAllBytes(TempImageFilePath);
-                                    //‘—M
+                                    //é€ä¿¡
                                     ClientPCInfos[i].SendImage(imageData);
                                     ClientPCInfos[i].WaitingForInput = true;
                                     break;
@@ -393,29 +393,29 @@ namespace EnigMouseSendMaster
 
                         tempDepthMatBit.Dispose();
                         tempIrMatBit.Dispose();
-                        //ƒeƒXƒg‚Ìˆ×’x‰„‚³‚¹‚Ä‚¢‚é
+                        //ãƒ†ã‚¹ãƒˆã®ç‚ºé…å»¶ã•ã›ã¦ã„ã‚‹
                         await Task.Delay(100);
                     }
-                    //•\¦‚ğXV
+                    //è¡¨ç¤ºã‚’æ›´æ–°
                     this.Update();
                 }
 
             }
         }
 
-        //Bitmap‰æ‘œ‚ÉŠÖ‚·‚é‰Šúİ’è
+        //Bitmapç”»åƒã«é–¢ã™ã‚‹åˆæœŸè¨­å®š
         private void InitBitmap()
         {
-            //Depth‰æ‘œ‚Ì‰¡•(width)‚Æc•(height)‚ğæ“¾
+            //Depthç”»åƒã®æ¨ªå¹…(width)ã¨ç¸¦å¹…(height)ã‚’å–å¾—
             int width = kinect.GetCalibration().DepthCameraCalibration.ResolutionWidth;
             int height = kinect.GetCalibration().DepthCameraCalibration.ResolutionHeight;
 
-            //PictureBox‚É“\‚è•t‚¯‚éBitmap‰æ‘œ‚ğì¬BƒTƒCƒY‚Íkinect‚ÌDepth‰æ‘œ‚Æ“¯‚¶
+            //PictureBoxã«è²¼ã‚Šä»˜ã‘ã‚‹Bitmapç”»åƒã‚’ä½œæˆã€‚ã‚µã‚¤ã‚ºã¯kinectã®Depthç”»åƒã¨åŒã˜
             depthBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             irBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         }
 
-        //Kinect‚Ì‰Šú‰»
+        //Kinectã®åˆæœŸåŒ–
         private void InitKinect()
         {
             kinect = Device.Open(0);
@@ -431,7 +431,7 @@ namespace EnigMouseSendMaster
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //’l‚ğ“Ç‚İ‚İ
+            //å€¤ã‚’èª­ã¿è¾¼ã¿
             TopMask.Text = Properties.Settings.Default.TopMask.ToString();
             BottomMask.Text = Properties.Settings.Default.BottomMask.ToString();
             LeftMask.Text = Properties.Settings.Default.LeftMask.ToString();
@@ -439,12 +439,12 @@ namespace EnigMouseSendMaster
             GamePCIP.Text = Properties.Settings.Default.GetConnectIP;
         }
 
-        //ƒAƒvƒŠI—¹‚ÉKinectI—¹
+        //ã‚¢ãƒ—ãƒªçµ‚äº†æ™‚ã«Kinectçµ‚äº†
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             loop = false;
 
-            //’l‚ğ•Û‘¶
+            //å€¤ã‚’ä¿å­˜
             Properties.Settings.Default.TopMask = int.Parse(TopMask.Text);
             Properties.Settings.Default.BottomMask = int.Parse(BottomMask.Text);
             Properties.Settings.Default.LeftMask = int.Parse(LeftMask.Text);
@@ -453,7 +453,7 @@ namespace EnigMouseSendMaster
 
             Properties.Settings.Default.Save();
             
-            //’â~ˆ—
+            //åœæ­¢å‡¦ç†
             kinect?.StopCameras();
         }
 
@@ -468,56 +468,53 @@ namespace EnigMouseSendMaster
 
         private List<ClientPCInfo> CheckConnectingPCInfoList = new List<ClientPCInfo>();
         /// <summary>
-        /// ClietnPC‚ÉÚ‘±‚·‚é
+        /// ClietnPCã«æ¥ç¶šã™ã‚‹
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ClientConnectButton_Click(object sender, EventArgs e)
         {
-            //“ü—Í—“‚ª‹ó‚È‚ç‰½‚à‚µ‚È‚¢‚ÅI—¹
+            //å…¥åŠ›æ¬„ãŒç©ºãªã‚‰ä½•ã‚‚ã—ãªã„ã§çµ‚äº†
             if (ClientPCIP.Text == "") { return; }
 
             Console.WriteLine(ClientPCIP.Text);
             ClientPCInfo clientPCInfo = new ClientPCInfo(ClientPCIP.Text);
             CheckConnectingPCInfoList.Add(clientPCInfo);
 
-            //‚·‚×‚Ä‚Ìì‹Æ‚ªI‚í‚Á‚½‚çIPƒAƒhƒŒƒX‚Ì“ü—Í—“‚ğ‹ó‚É‚·‚é
+            //ã™ã¹ã¦ã®ä½œæ¥­ãŒçµ‚ã‚ã£ãŸã‚‰IPã‚¢ãƒ‰ãƒ¬ã‚¹ã®å…¥åŠ›æ¬„ã‚’ç©ºã«ã™ã‚‹
             ClientPCIP.Text = "";
         }
         private void KinectRun_Click(object sender, EventArgs e)
         {
             InitKinect();
 
-            //Kinect‚Ìİ’èî•ñ‚ÉŠî‚Ã‚¢‚ÄBitmapŠÖ˜Aî•ñ‚ğ‰Šú‰»
+            //Kinectã®è¨­å®šæƒ…å ±ã«åŸºã¥ã„ã¦Bitmapé–¢é€£æƒ…å ±ã‚’åˆæœŸåŒ–
             InitBitmap();
 
-            //‰æ‘œ”F¯‚ÌƒNƒ‰ƒX‚ğ‰Šú‰»
-            //imageRecognition = new ImageRecognition();
-
-            //ƒf[ƒ^æ“¾
-            //TODO:ƒLƒƒƒ“ƒZƒ‹‚ÆÄÀs‰Â”\‚È‚çÄÀs‚·‚éˆ—
+            //ãƒ‡ãƒ¼ã‚¿å–å¾—
+            //TODO:ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã¨å†å®Ÿè¡Œå¯èƒ½ãªã‚‰å†å®Ÿè¡Œã™ã‚‹å‡¦ç†
             Task t = KinectUpdate();
         }
 
-        #region ƒfƒoƒbƒO
-        //ƒfƒoƒbƒO—p
+        #region ãƒ‡ãƒãƒƒã‚°
+        //ãƒ‡ãƒãƒƒã‚°ç”¨
         [DllImport("kernel32.dll")]
         private static extern bool AllocConsole();
 
-        //ƒfƒoƒbƒO—p
+        //ãƒ‡ãƒãƒƒã‚°ç”¨
         [DllImport("kernel32.dll")]
         private static extern bool FreeConsole();
 
         private void DebugSender_Click(object sender, EventArgs e)
         {
-            //ƒfƒoƒbƒO—p
+            //ãƒ‡ãƒãƒƒã‚°ç”¨
             AllocConsole();
-            //ƒfƒoƒbƒO
+            //ãƒ‡ãƒãƒƒã‚°
             Task tsl = TestSendLoop();
         }
 
 
-        //ƒfƒoƒbƒO
+        //ãƒ‡ãƒãƒƒã‚°
         double time = 0;
         private async Task TestSendLoop()
         {
@@ -529,14 +526,14 @@ namespace EnigMouseSendMaster
                 {
                     TimeSpan deltaTime = GetDeltaTime();
 
-                    time += deltaTime.TotalSeconds; // Œ»İ‚ÌŠÔ‚ğæ“¾i•b’PˆÊj
+                    time += deltaTime.TotalSeconds; // ç¾åœ¨ã®æ™‚é–“ã‚’å–å¾—ï¼ˆç§’å˜ä½ï¼‰
                     Console.WriteLine($"time = {time}");
 
-                    double angle = 2 * Math.PI * time / 60; // ŠÔ‚ğŠp“x‚É•ÏŠ·
+                    double angle = 2 * Math.PI * time / 60; // æ™‚é–“ã‚’è§’åº¦ã«å¤‰æ›
                     Console.WriteLine($"angle = {angle}");
 
-                    double dx = Math.Cos(angle); // xÀ•W
-                    double dy = Math.Sin(angle); // yÀ•W
+                    double dx = Math.Cos(angle); // xåº§æ¨™
+                    double dy = Math.Sin(angle); // yåº§æ¨™
 
                     dx = (dx + 1) / 2;
                     dy = (dy + 1) / 2;
@@ -555,7 +552,7 @@ namespace EnigMouseSendMaster
                     GamePC_UDPSender.Send(serializedData);
 
                 }
-                //•\¦‚ğXV
+                //è¡¨ç¤ºã‚’æ›´æ–°
                 this.Update();
                 await Task.Delay(TimeSpan.FromSeconds(0.25f));
             }
