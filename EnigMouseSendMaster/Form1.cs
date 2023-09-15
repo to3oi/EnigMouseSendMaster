@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
@@ -173,7 +174,14 @@ namespace EnigMouseSendMaster
             info.SetWait(false);
             info.WaitingForInput = false;
 
-            //TODO:リザルトを送信
+            if (isGamePC_UDPSend)
+            {
+                //リザルトを送信
+                var sendResult = MessagePackSerializer.Serialize(result.ResultStructs);
+
+
+                GamePC_UDPSender.Send(sendResult);
+            }
         }
 
         private void ClientPCRespons_Receive(byte[] bytes)
@@ -345,15 +353,17 @@ namespace EnigMouseSendMaster
                          * |
                          * y
                          */
-                        var bottomValue = outDst.Height - topMask - bottomMask;
-                        var rightValue = outDst.Width - leftMask - rightMask;
+                        var bottomValue = outDst.Height - (topMask + bottomMask);
+                        var rightValue = outDst.Width - (leftMask + rightMask);
                         if (outDst.Width >= rightValue &&
                             outDst.Height >= bottomValue)
                         {
                             Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,
-                                rightValue,
-                               bottomValue));
-                            Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 640 / clipedMat.Cols, 576 / clipedMat.Rows);
+                                rightValue,bottomValue));
+                            /*Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 512 / clipedMat.Cols, 512 / clipedMat.Rows);*/
+                            Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(512, 512));
+                            resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
+
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
 
                             var TempImageFilePath = Path.Combine(assetsPath, "TempImage", $"{saveFileIndex}.jpeg");
@@ -393,8 +403,6 @@ namespace EnigMouseSendMaster
 
                         tempDepthMatBit.Dispose();
                         tempIrMatBit.Dispose();
-                        //テストの為遅延させている
-                        await Task.Delay(100);
                     }
                     //表示を更新
                     this.Update();
