@@ -141,8 +141,7 @@ namespace EnigMouseSendMaster
 
             InitializeComponent();
 
-            //デバッグ用
-            AllocConsole();
+
             /*            //IPv4のアドレスを取得して表示
                         IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
@@ -166,10 +165,9 @@ namespace EnigMouseSendMaster
 
             //TODO:null許容型ではない方法できれいに書きたい
             var info = GetClientPCInfo(result.IPAddress);
-            if(info == null)
+            if (info == null)
             {
-                Console.WriteLine($"Erroe IP {result.IPAddress}");
-                return; 
+                return;
             }
             info.SetWait(false);
             info.WaitingForInput = false;
@@ -382,7 +380,7 @@ namespace EnigMouseSendMaster
 
 
                             #region 画像データを送信
-                            for (int i = 0;i < ClientPCInfos.Count; i++)
+                            for (int i = 0; i < ClientPCInfos.Count; i++)
                             {
                                 Console.WriteLine(ClientPCInfos[i].WaitingForInput);
                                 //物体検出の結果を取得済みで現在フリーな状態の場合
@@ -460,7 +458,7 @@ namespace EnigMouseSendMaster
             Properties.Settings.Default.GetConnectIP = GamePCIP.Text;
 
             Properties.Settings.Default.Save();
-            
+
             //停止処理
             kinect?.StopCameras();
         }
@@ -485,7 +483,6 @@ namespace EnigMouseSendMaster
             //入力欄が空なら何もしないで終了
             if (ClientPCIP.Text == "") { return; }
 
-            Console.WriteLine(ClientPCIP.Text);
             ClientPCInfo clientPCInfo = new ClientPCInfo(ClientPCIP.Text);
             CheckConnectingPCInfoList.Add(clientPCInfo);
 
@@ -505,18 +502,9 @@ namespace EnigMouseSendMaster
         }
 
         #region デバッグ
-        //デバッグ用
-        [DllImport("kernel32.dll")]
-        private static extern bool AllocConsole();
-
-        //デバッグ用
-        [DllImport("kernel32.dll")]
-        private static extern bool FreeConsole();
 
         private void DebugSender_Click(object sender, EventArgs e)
         {
-            //デバッグ用
-            AllocConsole();
             //デバッグ
             Task tsl = TestSendLoop();
         }
@@ -535,10 +523,8 @@ namespace EnigMouseSendMaster
                     TimeSpan deltaTime = GetDeltaTime();
 
                     time += deltaTime.TotalSeconds; // 現在の時間を取得（秒単位）
-                    Console.WriteLine($"time = {time}");
 
                     double angle = 2 * Math.PI * time / 60; // 時間を角度に変換
-                    Console.WriteLine($"angle = {angle}");
 
                     double dx = Math.Cos(angle); // x座標
                     double dy = Math.Sin(angle); // y座標
@@ -577,5 +563,21 @@ namespace EnigMouseSendMaster
             return deltaTime;
         }
         #endregion
+
+        private void ClientPCIP_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                ClientConnectButton_Click(sender, e);
+            }
+        }
+
+        private void GamePCIP_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                GamePCConnectButton_Click(sender, e);
+            }
+        }
     }
 }

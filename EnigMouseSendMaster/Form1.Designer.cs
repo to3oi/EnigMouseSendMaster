@@ -195,6 +195,7 @@
             GamePCIP.Name = "GamePCIP";
             GamePCIP.Size = new Size(231, 23);
             GamePCIP.TabIndex = 0;
+            GamePCIP.KeyDown += GamePCIP_KeyDown;
             // 
             // SendClientPCAdd
             // 
@@ -234,6 +235,7 @@
             ClientPCIP.Name = "ClientPCIP";
             ClientPCIP.Size = new Size(231, 23);
             ClientPCIP.TabIndex = 0;
+            ClientPCIP.KeyDown += ClientPCIP_KeyDown;
             // 
             // groupBox1
             // 
