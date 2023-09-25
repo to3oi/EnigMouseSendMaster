@@ -382,7 +382,6 @@ namespace EnigMouseSendMaster
                             #region 画像データを送信
                             for (int i = 0; i < ClientPCInfos.Count; i++)
                             {
-                                Console.WriteLine(ClientPCInfos[i].WaitingForInput);
                                 //物体検出の結果を取得済みで現在フリーな状態の場合
                                 if (!ClientPCInfos[i].WaitingForInput)
                                 {
@@ -533,8 +532,6 @@ namespace EnigMouseSendMaster
                     dy = (dy + 1) / 2;
                     dx *= 500;
                     dy *= 500;
-
-                    Console.WriteLine($"dx = {dx},dy = {dy}");
 
 
                     List<ResultStruct> results = new List<ResultStruct>(){
