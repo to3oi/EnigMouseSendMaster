@@ -357,7 +357,7 @@ namespace EnigMouseSendMaster
                             outDst.Height >= bottomValue)
                         {
                             Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,
-                                rightValue,bottomValue));
+                                rightValue, bottomValue));
                             /*Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 512 / clipedMat.Cols, 512 / clipedMat.Rows);*/
                             Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(512, 512));
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);

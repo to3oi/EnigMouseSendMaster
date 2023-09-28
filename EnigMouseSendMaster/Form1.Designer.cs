@@ -51,22 +51,24 @@
             LeftMask = new NumericUpDown();
             TopMask = new NumericUpDown();
             groupBox5 = new GroupBox();
-            DebugSenderButton = new Button();
             KinectRunButton = new Button();
             splitContainer1 = new SplitContainer();
             tableLayoutPanel2 = new TableLayoutPanel();
+            pictureBox1 = new PictureBox();
             g_Result = new GroupBox();
             resultBitmapBox = new PictureBox();
             g_IR = new GroupBox();
             irBitmapBox = new PictureBox();
             g_Depth = new GroupBox();
             depthBitmapBox = new PictureBox();
+            splitContainer3 = new SplitContainer();
             tableLayoutPanel1.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             SendClientPCAdd.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -80,12 +82,16 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             g_Result.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).BeginInit();
             g_IR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)irBitmapBox).BeginInit();
             g_Depth.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)depthBitmapBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -98,7 +104,7 @@
             tableLayoutPanel1.Controls.Add(SendClientPCAdd, 0, 0);
             tableLayoutPanel1.Controls.Add(groupBox1, 1, 0);
             tableLayoutPanel1.Controls.Add(splitContainer2, 0, 2);
-            tableLayoutPanel1.Controls.Add(groupBox5, 1, 2);
+            tableLayoutPanel1.Controls.Add(splitContainer3, 1, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -264,9 +270,13 @@
             splitContainer2.Location = new Point(3, 221);
             splitContainer2.Name = "splitContainer2";
             // 
+            // splitContainer2.Panel1
+            // 
+            splitContainer2.Panel1.Controls.Add(groupBox4);
+            // 
             // splitContainer2.Panel2
             // 
-            splitContainer2.Panel2.Controls.Add(groupBox4);
+            splitContainer2.Panel2.Controls.Add(groupBox5);
             splitContainer2.Size = new Size(422, 103);
             splitContainer2.SplitterDistance = 199;
             splitContainer2.TabIndex = 6;
@@ -280,7 +290,7 @@
             groupBox4.Dock = DockStyle.Fill;
             groupBox4.Location = new Point(0, 0);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(219, 103);
+            groupBox4.Size = new Size(199, 103);
             groupBox4.TabIndex = 0;
             groupBox4.TabStop = false;
             groupBox4.Text = "Mask";
@@ -288,7 +298,7 @@
             // BottomMask
             // 
             BottomMask.Anchor = AnchorStyles.Bottom;
-            BottomMask.Location = new Point(84, 74);
+            BottomMask.Location = new Point(74, 74);
             BottomMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             BottomMask.Name = "BottomMask";
             BottomMask.Size = new Size(55, 23);
@@ -297,7 +307,7 @@
             // RightMask
             // 
             RightMask.Anchor = AnchorStyles.Right;
-            RightMask.Location = new Point(161, 47);
+            RightMask.Location = new Point(141, 47);
             RightMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             RightMask.Name = "RightMask";
             RightMask.Size = new Size(55, 23);
@@ -315,7 +325,7 @@
             // TopMask
             // 
             TopMask.Anchor = AnchorStyles.Top;
-            TopMask.Location = new Point(84, 22);
+            TopMask.Location = new Point(74, 22);
             TopMask.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             TopMask.Minimum = new decimal(new int[] { 1000, 0, 0, int.MinValue });
             TopMask.Name = "TopMask";
@@ -324,29 +334,18 @@
             // 
             // groupBox5
             // 
-            groupBox5.Controls.Add(DebugSenderButton);
             groupBox5.Controls.Add(KinectRunButton);
             groupBox5.Dock = DockStyle.Fill;
-            groupBox5.Location = new Point(431, 221);
+            groupBox5.Location = new Point(0, 0);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(422, 103);
+            groupBox5.Size = new Size(219, 103);
             groupBox5.TabIndex = 7;
             groupBox5.TabStop = false;
             groupBox5.Text = "SendType";
             // 
-            // DebugSenderButton
-            // 
-            DebugSenderButton.Location = new Point(151, 47);
-            DebugSenderButton.Name = "DebugSenderButton";
-            DebugSenderButton.Size = new Size(87, 23);
-            DebugSenderButton.TabIndex = 1;
-            DebugSenderButton.Text = "DebugSender";
-            DebugSenderButton.UseVisualStyleBackColor = true;
-            DebugSenderButton.Click += DebugSender_Click;
-            // 
             // KinectRunButton
             // 
-            KinectRunButton.Location = new Point(25, 45);
+            KinectRunButton.Location = new Point(64, 45);
             KinectRunButton.Name = "KinectRunButton";
             KinectRunButton.Size = new Size(75, 23);
             KinectRunButton.TabIndex = 0;
@@ -375,9 +374,9 @@
             // tableLayoutPanel2
             // 
             tableLayoutPanel2.ColumnCount = 3;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 27.7777767F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 27.77778F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 27.77778F));
             tableLayoutPanel2.Controls.Add(g_Result, 0, 0);
             tableLayoutPanel2.Controls.Add(g_IR, 0, 0);
             tableLayoutPanel2.Controls.Add(g_Depth, 0, 0);
@@ -386,13 +385,26 @@
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel2.Size = new Size(856, 324);
             tableLayoutPanel2.TabIndex = 0;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.BackgroundImageLayout = ImageLayout.Center;
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = Properties.Resources.EnigMouse_Mouse;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(278, 103);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 11;
+            pictureBox1.TabStop = false;
             // 
             // g_Result
             // 
             g_Result.Controls.Add(resultBitmapBox);
+            g_Result.Dock = DockStyle.Fill;
             g_Result.Location = new Point(573, 3);
             g_Result.Name = "g_Result";
             g_Result.Size = new Size(280, 318);
@@ -414,6 +426,7 @@
             // g_IR
             // 
             g_IR.Controls.Add(irBitmapBox);
+            g_IR.Dock = DockStyle.Fill;
             g_IR.Location = new Point(288, 3);
             g_IR.Name = "g_IR";
             g_IR.Size = new Size(279, 318);
@@ -435,6 +448,7 @@
             // g_Depth
             // 
             g_Depth.Controls.Add(depthBitmapBox);
+            g_Depth.Dock = DockStyle.Fill;
             g_Depth.Location = new Point(3, 3);
             g_Depth.Name = "g_Depth";
             g_Depth.Size = new Size(279, 318);
@@ -452,6 +466,19 @@
             depthBitmapBox.SizeMode = PictureBoxSizeMode.Zoom;
             depthBitmapBox.TabIndex = 0;
             depthBitmapBox.TabStop = false;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = DockStyle.Fill;
+            splitContainer3.Location = new Point(431, 221);
+            splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(pictureBox1);
+            splitContainer3.Size = new Size(422, 103);
+            splitContainer3.SplitterDistance = 140;
+            splitContainer3.TabIndex = 7;
             // 
             // Form1
             // 
@@ -471,6 +498,7 @@
             SendClientPCAdd.ResumeLayout(false);
             SendClientPCAdd.PerformLayout();
             groupBox1.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
@@ -485,12 +513,16 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             g_Result.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).EndInit();
             g_IR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)irBitmapBox).EndInit();
             g_Depth.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)depthBitmapBox).EndInit();
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -520,7 +552,6 @@
         private NumericUpDown LeftMask;
         private NumericUpDown TopMask;
         private GroupBox groupBox5;
-        private Button DebugSenderButton;
         private Button KinectRunButton;
         private TableLayoutPanel tableLayoutPanel2;
         private GroupBox g_Depth;
@@ -529,5 +560,7 @@
         private PictureBox resultBitmapBox;
         private GroupBox g_IR;
         private PictureBox irBitmapBox;
+        private PictureBox pictureBox1;
+        private SplitContainer splitContainer3;
     }
 }
