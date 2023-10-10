@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             tableLayoutPanel1 = new TableLayoutPanel();
             groupBox3 = new GroupBox();
             ConnectedGamePCPort = new Label();
@@ -52,16 +53,16 @@
             TopMask = new NumericUpDown();
             groupBox5 = new GroupBox();
             KinectRunButton = new Button();
+            splitContainer3 = new SplitContainer();
+            pictureBox1 = new PictureBox();
             splitContainer1 = new SplitContainer();
             tableLayoutPanel2 = new TableLayoutPanel();
-            pictureBox1 = new PictureBox();
             g_Result = new GroupBox();
             resultBitmapBox = new PictureBox();
             g_IR = new GroupBox();
             irBitmapBox = new PictureBox();
             g_Depth = new GroupBox();
             depthBitmapBox = new PictureBox();
-            splitContainer3 = new SplitContainer();
             tableLayoutPanel1.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -77,21 +78,21 @@
             ((System.ComponentModel.ISupportInitialize)LeftMask).BeginInit();
             ((System.ComponentModel.ISupportInitialize)TopMask).BeginInit();
             groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             g_Result.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).BeginInit();
             g_IR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)irBitmapBox).BeginInit();
             g_Depth.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)depthBitmapBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
-            splitContainer3.Panel2.SuspendLayout();
-            splitContainer3.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -353,6 +354,32 @@
             KinectRunButton.UseVisualStyleBackColor = true;
             KinectRunButton.Click += KinectRun_Click;
             // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = DockStyle.Fill;
+            splitContainer3.Location = new Point(431, 221);
+            splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(pictureBox1);
+            splitContainer3.Size = new Size(422, 103);
+            splitContainer3.SplitterDistance = 140;
+            splitContainer3.TabIndex = 7;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.BackgroundImageLayout = ImageLayout.Center;
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(278, 103);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 11;
+            pictureBox1.TabStop = false;
+            // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
@@ -387,19 +414,6 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.Size = new Size(856, 324);
             tableLayoutPanel2.TabIndex = 0;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.BackgroundImageLayout = ImageLayout.Center;
-            pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Image = Properties.Resources.EnigMouse_Mouse;
-            pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(278, 103);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 11;
-            pictureBox1.TabStop = false;
             // 
             // g_Result
             // 
@@ -467,19 +481,6 @@
             depthBitmapBox.TabIndex = 0;
             depthBitmapBox.TabStop = false;
             // 
-            // splitContainer3
-            // 
-            splitContainer3.Dock = DockStyle.Fill;
-            splitContainer3.Location = new Point(431, 221);
-            splitContainer3.Name = "splitContainer3";
-            // 
-            // splitContainer3.Panel2
-            // 
-            splitContainer3.Panel2.Controls.Add(pictureBox1);
-            splitContainer3.Size = new Size(422, 103);
-            splitContainer3.SplitterDistance = 140;
-            splitContainer3.TabIndex = 7;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -508,21 +509,21 @@
             ((System.ComponentModel.ISupportInitialize)LeftMask).EndInit();
             ((System.ComponentModel.ISupportInitialize)TopMask).EndInit();
             groupBox5.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             g_Result.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)resultBitmapBox).EndInit();
             g_IR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)irBitmapBox).EndInit();
             g_Depth.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)depthBitmapBox).EndInit();
-            splitContainer3.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
-            splitContainer3.ResumeLayout(false);
             ResumeLayout(false);
         }
 

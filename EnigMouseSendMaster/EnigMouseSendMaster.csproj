@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RepositoryUrl>https://github.com/to3oi/EnigMouseSendMaster</RepositoryUrl>
+    <PackageIcon>EnigMouse_Mouse_Icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -53,6 +55,14 @@
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\EnigMouse_Mouse.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="Resources\EnigMouse_Mouse_Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
