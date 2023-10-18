@@ -206,7 +206,7 @@ namespace EnigMouseSendMaster
             preFrame = DateTime.Now;
             while (loop)
             {
-                //画像認識を15FPSに制限
+/*                //画像認識を15FPSに制限
                 if ((DateTime.Now - preFrame).Milliseconds < 67)
                 {
                     this.Update();
@@ -215,7 +215,7 @@ namespace EnigMouseSendMaster
                 else
                 {
                     preFrame = DateTime.Now;
-                }
+                }*/
 
                 //データの取得
                 using (Capture capture = await Task.Run(() => kinect.GetCapture()).ConfigureAwait(true))
