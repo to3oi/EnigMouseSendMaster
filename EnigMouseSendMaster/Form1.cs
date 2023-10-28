@@ -1,12 +1,8 @@
-﻿using MessagePack;
+using MessagePack;
 using Microsoft.Azure.Kinect.Sensor;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using System.Diagnostics;
 using System.Drawing.Imaging;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using UnityEasyNet;
 using static EnigMouseSendMaster.FilePath;
@@ -141,19 +137,6 @@ namespace EnigMouseSendMaster
 
             InitializeComponent();
 
-
-            /*            //IPv4のアドレスを取得して表示
-                        IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
-
-                        foreach (IPAddress ip in ipHostEntry.AddressList)
-                        {
-                            if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                            {
-                                PCViewIpAdress.Text = ip.ToString();
-                                break;
-                            }
-                        }*/
-
             //UDPReceiverを準備
             ClientPCRespons_UDPReceiver = new UDPReceiver(CommunicationResponsPort, ClientPCRespons_Receive);
             ClientPC_Result_UDPReceiver = new UDPReceiver(ResultReceivePort, ClientPC_Result_Receive);
@@ -203,20 +186,8 @@ namespace EnigMouseSendMaster
         //Kinectのデータ更新
         private async Task KinectUpdate()
         {
-            preFrame = DateTime.Now;
             while (loop)
             {
-/*                //画像認識を15FPSに制限
-                if ((DateTime.Now - preFrame).Milliseconds < 67)
-                {
-                    this.Update();
-                    continue;
-                }
-                else
-                {
-                    preFrame = DateTime.Now;
-                }*/
-
                 //データの取得
                 using (Capture capture = await Task.Run(() => kinect.GetCapture()).ConfigureAwait(true))
                 {
@@ -417,7 +388,7 @@ namespace EnigMouseSendMaster
 
             //PictureBoxに貼り付けるBitmap画像を作成。サイズはkinectのDepth画像と同じ
             depthBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            irBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            irBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
         }
 
         //Kinectの初期化
@@ -496,70 +467,9 @@ namespace EnigMouseSendMaster
             InitBitmap();
 
             //データ取得
-            //TODO:キャンセルと再実行可能なら再実行する処理
             Task t = KinectUpdate();
         }
 
-        #region デバッグ
-
-        private void DebugSender_Click(object sender, EventArgs e)
-        {
-            //デバッグ
-            Task tsl = TestSendLoop();
-        }
-
-
-        //デバッグ
-        double time = 0;
-        private async Task TestSendLoop()
-        {
-            this.Show();
-            stopwatch.Start();
-            while (loop)
-            {
-                if (isGamePC_UDPSend)
-                {
-                    TimeSpan deltaTime = GetDeltaTime();
-
-                    time += deltaTime.TotalSeconds; // 現在の時間を取得（秒単位）
-
-                    double angle = 2 * Math.PI * time / 60; // 時間を角度に変換
-
-                    double dx = Math.Cos(angle); // x座標
-                    double dy = Math.Sin(angle); // y座標
-
-                    dx = (dx + 1) / 2;
-                    dy = (dy + 1) / 2;
-                    dx *= 500;
-                    dy *= 500;
-
-
-                    List<ResultStruct> results = new List<ResultStruct>(){
-                    new ResultStruct{ Label = "Cross", PosX = (int)Math.Round(dx), PosY = (int)Math.Round(dy), Confidence = 0.8f }
-                    };
-
-
-                    byte[] serializedData = MessagePackSerializer.Serialize(results);
-                    GamePC_UDPSender.Send(serializedData);
-
-                }
-                //表示を更新
-                this.Update();
-                await Task.Delay(TimeSpan.FromSeconds(0.25f));
-            }
-        }
-
-        private static Stopwatch stopwatch = new Stopwatch();
-        private static TimeSpan lastFrameTime;
-        public static TimeSpan GetDeltaTime()
-        {
-            TimeSpan currentTime = stopwatch.Elapsed;
-            TimeSpan deltaTime = currentTime - lastFrameTime;
-            lastFrameTime = currentTime;
-
-            return deltaTime;
-        }
-        #endregion
 
         private void ClientPCIP_KeyDown(object sender, KeyEventArgs e)
         {
