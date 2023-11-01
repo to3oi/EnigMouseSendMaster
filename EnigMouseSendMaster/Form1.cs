@@ -154,10 +154,10 @@ namespace EnigMouseSendMaster
             info.SetWait(false);
             info.WaitingForInput = false;
 
+            viewResultStructs = result.ResultStructs;
+
             if (isGamePC_UDPSend)
             {
-                viewResultStructs = result.ResultStructs;
-
                 //リザルトを送信
                 var sendResult = MessagePackSerializer.Serialize(result.ResultStructs);
 
