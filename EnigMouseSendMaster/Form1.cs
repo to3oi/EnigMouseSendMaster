@@ -329,7 +329,7 @@ namespace EnigMouseSendMaster
                         if (outDst.Width >= rightValue &&
                             outDst.Height >= bottomValue)
                         {
-                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,rightValue, bottomValue));
+                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask, rightValue, bottomValue));
                             Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(512, 512));
 
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
@@ -347,8 +347,8 @@ namespace EnigMouseSendMaster
                             {
                                 foreach (var resultStruct in viewResultStructs)
                                 {
-                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, Scalar.Black, thickness: 15) ;
-                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label), thickness: 10) ;
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, Scalar.Black, thickness: 15);
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label), thickness: 10);
                                 }
                             }
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);

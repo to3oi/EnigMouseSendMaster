@@ -346,6 +346,7 @@
             // 
             // KinectRunButton
             // 
+            KinectRunButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             KinectRunButton.Location = new Point(64, 45);
             KinectRunButton.Name = "KinectRunButton";
             KinectRunButton.Size = new Size(75, 23);
