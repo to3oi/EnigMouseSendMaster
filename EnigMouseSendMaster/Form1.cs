@@ -329,9 +329,7 @@ namespace EnigMouseSendMaster
                         if (outDst.Width >= rightValue &&
                             outDst.Height >= bottomValue)
                         {
-                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,
-                                rightValue, bottomValue));
-                            /*Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 512 / clipedMat.Cols, 512 / clipedMat.Rows);*/
+                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,rightValue, bottomValue));
                             Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(512, 512));
 
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
@@ -341,16 +339,17 @@ namespace EnigMouseSendMaster
                             //保存
                             clipedMat.SaveImage(TempImageFilePath);
 
+                            //カラーモードを変更
+                            Cv2.CvtColor(clipedMat, clipedMat, ColorConversionCodes.GRAY2RGB);
+
                             //TODO:取得した座標を表示する
                             if (viewResultStructs.Count != 0)
                             {
                                 foreach (var resultStruct in viewResultStructs)
                                 {
-                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label));
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label), thickness: 10) ;
                                 }
-
                             }
-
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
 
 
@@ -399,7 +398,7 @@ namespace EnigMouseSendMaster
                 case "Cross": return Scalar.Blue;
                 case "Dot": return Scalar.GreenYellow;
                 case "Line": return Scalar.Red;
-                case "Round": return Scalar.SkyBlue;
+                case "Round": return Scalar.RoyalBlue;
 
                 default: return Scalar.Black;
             }
