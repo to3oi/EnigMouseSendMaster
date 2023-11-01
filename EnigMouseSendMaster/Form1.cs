@@ -347,6 +347,7 @@ namespace EnigMouseSendMaster
                             {
                                 foreach (var resultStruct in viewResultStructs)
                                 {
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, Scalar.Black, thickness: 15) ;
                                     clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label), thickness: 10) ;
                                 }
                             }
@@ -395,10 +396,10 @@ namespace EnigMouseSendMaster
         {
             switch (label)
             {
-                case "Cross": return Scalar.Blue;
-                case "Dot": return Scalar.GreenYellow;
-                case "Line": return Scalar.Red;
-                case "Round": return Scalar.RoyalBlue;
+                case "Cross": return Scalar.RoyalBlue;
+                case "Dot": return Scalar.MediumSpringGreen;
+                case "Line": return Scalar.Tomato;
+                case "Round": return Scalar.LightBlue;
 
                 default: return Scalar.Black;
             }
