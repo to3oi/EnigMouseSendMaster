@@ -60,6 +60,9 @@ namespace EnigMouseSendMaster
 
         uint saveFileIndex = 0;
 
+        //受信したリザルトを表示するため一時的に保持
+        List<ResultStruct> viewResultStructs = new List<ResultStruct>();
+
         #region 通信関係の変数
 
         #region ゲーム本体の通信周り
@@ -151,6 +154,8 @@ namespace EnigMouseSendMaster
             info.SetWait(false);
             info.WaitingForInput = false;
 
+            viewResultStructs = result.ResultStructs;
+
             if (isGamePC_UDPSend)
             {
                 //リザルトを送信
@@ -170,7 +175,8 @@ namespace EnigMouseSendMaster
                 if (CheckConnectingPCInfoList[i].IP_Address == Encoding.UTF8.GetString(bytes))
                 {
                     var pcInfo = CheckConnectingPCInfoList[i];
-                    ClientPCIPList.Items.Add(pcInfo.IP_Address);
+                    AddClientPCIPList(pcInfo.IP_Address);
+
                     //照合が済んだらClientPCInfoをClientPCInfosに移動する
                     CheckConnectingPCInfoList.RemoveAt(i);
                     ClientPCInfos.Add(pcInfo);
@@ -323,11 +329,8 @@ namespace EnigMouseSendMaster
                         if (outDst.Width >= rightValue &&
                             outDst.Height >= bottomValue)
                         {
-                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,
-                                rightValue, bottomValue));
-                            /*Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(), 512 / clipedMat.Cols, 512 / clipedMat.Rows);*/
+                            Mat clipedMat = outDst.Clone(new OpenCvSharp.Rect(leftMask, topMask,rightValue, bottomValue));
                             Cv2.Resize(clipedMat, clipedMat, new OpenCvSharp.Size(512, 512));
-                            resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
 
                             resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
 
@@ -335,6 +338,21 @@ namespace EnigMouseSendMaster
 
                             //保存
                             clipedMat.SaveImage(TempImageFilePath);
+
+                            //カラーモードを変更
+                            Cv2.CvtColor(clipedMat, clipedMat, ColorConversionCodes.GRAY2RGB);
+
+                            //TODO:取得した座標を表示する
+                            if (viewResultStructs.Count != 0)
+                            {
+                                foreach (var resultStruct in viewResultStructs)
+                                {
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, Scalar.Black, thickness: 15) ;
+                                    clipedMat.Circle((int)resultStruct.PosX, (int)resultStruct.PosY, 5, GetColor(resultStruct.Label), thickness: 10) ;
+                                }
+                            }
+                            resultBitmapBox.Image = BitmapConverter.ToBitmap(clipedMat);
+
 
                             if (saveFileIndex <= 100)
                             {
@@ -374,7 +392,18 @@ namespace EnigMouseSendMaster
 
             }
         }
+        private Scalar GetColor(string label)
+        {
+            switch (label)
+            {
+                case "Cross": return Scalar.RoyalBlue;
+                case "Dot": return Scalar.MediumSpringGreen;
+                case "Line": return Scalar.Tomato;
+                case "Round": return Scalar.LightBlue;
 
+                default: return Scalar.Black;
+            }
+        }
         //Bitmap画像に関する初期設定
         private void InitBitmap()
         {
