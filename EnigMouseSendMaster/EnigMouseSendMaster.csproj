@@ -10,6 +10,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RepositoryUrl>https://github.com/to3oi/EnigMouseSendMaster</RepositoryUrl>
     <PackageIcon>EnigMouse_Mouse_Icon.png</PackageIcon>
+    <FileVersion>1.0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
